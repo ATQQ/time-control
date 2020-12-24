@@ -1,0 +1,23 @@
+{
+  "name": "time-control",
+  "version": "0.0.0",
+  "description": "生成自己的时间管理报告",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ATQQ/time-control.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ATQQ/time-control/issues"
+  },
+  "homepage": "https://github.com/ATQQ/time-control#readme"
+}
