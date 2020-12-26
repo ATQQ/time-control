@@ -25,5 +25,33 @@
 * 写笔记 0.1
 ```
 
-## 指令
-... 开发完善中
+## 开发指南
+### 克隆本仓库
+```sh
+git clone https://github.com/ATQQ/time-control.git
+
+cd time-control
+```
+
+### 安装依赖
+```sh
+npm install
+```
+
+### 创建软连接
+```sh
+npm link
+```
+
+## 使用
+```sh
+timec [options] [command]
+```
+
+### 指令
+|          Command          |        Description        |
+| :-----------------------: | :-----------------------: |
+| init  \| i \<projectName> |       init project        |
+| create \|  c \<filename>  | create template note file |
+
+... 不断开发完善中

@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 /**
  * 获取md文件的JSON描述
  * @param {string} fileContent 
@@ -56,6 +58,46 @@ function getJSON(fileContent) {
     return resData
 }
 
+/**
+ * 创建一个不存在的目录
+ * @param {string} path 
+ */
+function createDir(path) {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true })
+        return true
+    }
+    console.error(`${path} 已存在`);
+    return false
+}
+
+
+/**
+ * 创建一个新文件
+ * @param {string} path 
+ * @param {string} content 
+ */
+function createFile(path, content) {
+    if(!fs.existsSync(path)){
+        fs.writeFileSync(path, content, { encoding: 'utf-8' })
+        return true
+    }
+    console.error(`${path} 已存在`);
+    return false
+}
+
+/**
+ * 获取文件内容
+ * @param {string} filepath 
+ */
+function getFileContent(filepath) {
+    return fs.readFileSync(filepath, { encoding: 'utf-8' })
+}
+
+
 module.exports = {
-    getJSON
+    getJSON,
+    createDir,
+    getFileContent,
+    createFile
 }
