@@ -7,14 +7,29 @@ const { initProject, createTemplateFIle } = require('../src/template');
 // 命令执行目录
 const cwd = process.cwd()
 
+// 设置版号
 commander.version(json.version)
 
-// commander.arguments('<fileName...>')
-//     .option('-f, --file <path>', 'the path of directory which the new file belong to ')
-//     .option('-d, --all ')
-//     .action((filenames, cmdObj) => {
-//         console.log(filenames);
-//     })
+// 导出
+commander.arguments('[filenames...]') // 多个文件/目录
+    .option('-o, --output', 'Export analysis results')
+    .option('-j, --json', 'Export result as json description file')
+    .option('-m, --markdown', 'Export the result as a markdown file')
+    .option('-p, --page', 'Export the result as a page')
+    .option('-D, --day [date]', 'One day')
+    .option('-W, --week [date]', 'One week')
+    .option('-M, --month [date]', 'One month')
+    .option('-Y, --year [date]', 'One year')
+    .option('-R, --range [startDate] [endDate]', 'A time period')
+    .action((filenames, cmdObj) => {
+        console.log(filenames);
+        const { output } = cmdObj
+
+        // 导出
+        if (output) {
+            // 后续逻辑
+        }
+    })
 
 /**
  * 初始化项目
