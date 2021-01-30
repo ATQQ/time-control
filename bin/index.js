@@ -39,7 +39,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
                 createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
             }
             if (markdown) {
-                outPutMarkdown(getJSON(content))
+                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content)), false)
             }
         }
     })

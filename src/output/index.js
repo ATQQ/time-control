@@ -31,9 +31,12 @@ function outPutMarkdown(jsonSchema) {
         const d2 = new Date(b.title)
         return d1 - d2
     })
-    printEverydayData(jsonSchema)
-    console.log('------------');
-    printDataByTask(jsonSchema)
+    const res = []
+    res.push('<!--  -->',...getEverydayData(jsonSchema))
+    res.push(getEverydayData(jsonSchema, true))
+    // console.log('------------');
+    // printDataByTask(jsonSchema)
+    return res.join('\n')
 }
 
 
@@ -68,19 +71,41 @@ function printDataByTask(timeDes) {
         console.log('');
     })
 }
-function printEverydayData(timeDesc) {
+function fixedNum(num, length = 2) {
+    return (+num).toFixed(length)
+}
+
+function getEverydayData(timeDesc, withTime = false) {
+    let res = []
     // 按天任务时间汇总
     timeDesc.forEach(oneDay => {
+        const _oneRes = []
         const { title, tasks } = oneDay
-        console.log(`# ${title}`);
-        tasks.forEach(task => {
+        const sum = tasks.reduce((pre, task, _i) => {
             const { title, things } = task
-            const sum = things.reduce((pre, cuur) => {
-                return pre + (+cuur.time)
+            const sum = things.reduce((pre, thing) => {
+                // 某件事情况
+                const { content, time } = thing
+                _oneRes.unshift(`* ${content} -- ${fixedNum(time)}`)
+                return pre + (+thing.time)
             }, 0)
-            console.log(`## ${sum.toFixed(2)} -- ${title}`);
-        })
+
+            // 某一个任务
+            _oneRes.unshift(`## ${title} -- ${fixedNum(sum)}`)
+            return pre + sum
+        }, 0)
+
+        // 一天的标题
+        _oneRes.unshift(`# ${title} -- ${fixedNum(sum)}`)
+        res.push(..._oneRes, '')
     })
+    // 去掉统计的时间
+    if (!withTime) {
+        res = res.map(v => {
+            return v.replace(/\s--.*/, '')
+        })
+    }
+    return res
 }
 module.exports = {
     outputJson,
