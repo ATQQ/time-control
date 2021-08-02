@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 /**
  * 获取md文件的JSON描述
  * @param {string} fileContent 
@@ -56,6 +58,84 @@ function getJSON(fileContent) {
     return resData
 }
 
+/**
+ * 创建一个不存在的目录
+ * @param {string} path 
+ */
+function createDir(path) {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true })
+        return true
+    }
+    console.error(`${path} 已存在`);
+    return false
+}
+
+
+/**
+ * 创建一个新文件
+ * @param {string} path 
+ * @param {string} content 
+ * @param {boolean} judgeRepeat
+ */
+function createFile(path, content, judgeRepeat = true) {
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, content, { encoding: 'utf-8' })
+        return true
+    }
+    if (judgeRepeat) {
+        console.error(`${path} 已存在`);
+        return false
+    }
+    fs.writeFileSync(getNoRepeatFilePath(path), content, { encoding: 'utf-8' })
+    return true
+}
+
+/**
+ * 获取文件内容
+ * @param {string} filepath 
+ */
+function getFileContent(filepath) {
+    return fs.readFileSync(filepath, { encoding: 'utf-8' })
+}
+
+/**
+ * 获取多个文件的内容
+ * @param {string[]} files 
+ */
+function getFilesContent(files) {
+    return files.reduce((pre, now) => {
+        pre += '\n'
+        pre += getFileContent(now)
+        return pre
+    }, '')
+}
+
+function getFilePath(...p) {
+    return path.join(...p)
+}
+
+/**
+ * 获取与原文件不重复的一个文件路经
+ * @param {string} originPath 
+ */
+function getNoRepeatFilePath(originPath) {
+    let num = 1
+    const { dir, name, ext } = path.parse(originPath)
+    if (!fs.existsSync(originPath)) {
+        return originPath
+    }
+    // todo：待优化
+    while (fs.existsSync(getFilePath(dir, `${name}-${num}${ext}`))) {
+        num += 1
+    }
+    return getFilePath(dir, `${name}-${num}${ext}`)
+}
 module.exports = {
-    getJSON
+    getJSON,
+    createDir,
+    getFileContent,
+    createFile,
+    getFilesContent,
+    getFilePath
 }

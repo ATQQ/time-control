@@ -1,11 +1,4 @@
-const fs = require('fs')
-
-const path = require('path')
-const filepath = process.argv[2]
-const testData = fs.readFileSync(filepath, { encoding: 'utf-8' })
-
-const { getJSON } = require('../../src/utils')
-
+const { getJSON } = require("../utils")
 Date.prototype.format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1,                 //月份 
@@ -27,66 +20,25 @@ Date.prototype.format = function (fmt) {
     return fmt;
 }
 
-function printTest(timeDesc) {
-    // 取某个日期所在的一周
-    const dates = getAWeekDates(new Date())
+function outputJson(content) {
+    return JSON.stringify(getJSON(content))
+}
 
+function outPutMarkdown(jsonSchema) {
     // 从小到大排
-    timeDesc = timeDesc.filter((oneDay) => {
-        return dates.includes(oneDay.title)
-    }).sort((a, b) => {
+    jsonSchema = jsonSchema.sort((a, b) => {
         const d1 = new Date(a.title)
         const d2 = new Date(b.title)
         return d1 - d2
     })
-    console.log(timeDesc);
-    printEverydayData(timeDesc)
-    console.log('------------');
-    printDataByTask(timeDesc)
+    const res = []
+    res.push('<!--  -->',...getEverydayData(jsonSchema))
+    res.push(getEverydayData(jsonSchema, true))
+    // console.log('------------');
+    // printDataByTask(jsonSchema)
+    return res.join('\n')
 }
 
-function printEverydayData(timeDesc) {
-    // 按天任务时间汇总
-    timeDesc.forEach(oneDay => {
-        const { title, tasks } = oneDay
-        console.log(`# ${title}`);
-        tasks.forEach(task => {
-            const { title, things } = task
-            const sum = things.reduce((pre, cuur) => {
-                return pre + (+cuur.time)
-            }, 0)
-            console.log(`## ${sum.toFixed(2)} -- ${title}`);
-        })
-    })
-}
-
-/**
- * 获取某日所在的一周的日期
- * @param {Date} oneDate 
- */
-function getAWeekDates(oneDate) {
-    const oneDay = 1000 * 60 * 60 * 24
-    const day = oneDate.getDay()
-    let pre, back
-    if (day === 0) {
-        pre = 6
-        back = 0
-    } else {
-        pre = day - 1
-        back = 7 - day
-    }
-    const dates = []
-    while (pre) {
-        dates.push(new Date(oneDate.getTime() - oneDay * pre))
-        pre--
-    }
-    while (back) {
-        dates.push(new Date(oneDate.getTime() + oneDay * back))
-        back--
-    }
-    dates.push(oneDate)
-    return dates.sort((a, b) => a - b).map(v => v.format('yyyy-MM-dd'))
-}
 
 function printDataByTask(timeDes) {
     const tasks = timeDes.reduce((pre, oneDay) => {
@@ -119,5 +71,43 @@ function printDataByTask(timeDes) {
         console.log('');
     })
 }
+function fixedNum(num, length = 2) {
+    return (+num).toFixed(length)
+}
 
-printTest(getJSON(testData))
+function getEverydayData(timeDesc, withTime = false) {
+    let res = []
+    // 按天任务时间汇总
+    timeDesc.forEach(oneDay => {
+        const _oneRes = []
+        const { title, tasks } = oneDay
+        const sum = tasks.reduce((pre, task, _i) => {
+            const { title, things } = task
+            const sum = things.reduce((pre, thing) => {
+                // 某件事情况
+                const { content, time } = thing
+                _oneRes.unshift(`* ${content} -- ${fixedNum(time)}`)
+                return pre + (+thing.time)
+            }, 0)
+
+            // 某一个任务
+            _oneRes.unshift(`## ${title} -- ${fixedNum(sum)}`)
+            return pre + sum
+        }, 0)
+
+        // 一天的标题
+        _oneRes.unshift(`# ${title} -- ${fixedNum(sum)}`)
+        res.push(..._oneRes, '')
+    })
+    // 去掉统计的时间
+    if (!withTime) {
+        res = res.map(v => {
+            return v.replace(/\s--.*/, '')
+        })
+    }
+    return res
+}
+module.exports = {
+    outputJson,
+    outPutMarkdown
+}

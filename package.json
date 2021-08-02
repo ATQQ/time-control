@@ -6,9 +6,12 @@
   "directories": {
     "test": "test"
   },
+  "bin": {
+    "timec": "./bin/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:w":"node test/weekAnalyze/index.js"
+    "test:w": "node test/weekAnalyze/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/ATQQ/time-control/issues"
   },
-  "homepage": "https://github.com/ATQQ/time-control#readme"
+  "homepage": "https://github.com/ATQQ/time-control#readme",
+  "dependencies": {
+    "commander": "^6.2.1"
+  }
 }
