@@ -32,8 +32,8 @@ function outPutMarkdown(jsonSchema) {
         return d1 - d2
     })
     const res = []
-    res.push('<!--  -->',...getEverydayData(jsonSchema))
-    res.push(getEverydayData(jsonSchema, true))
+    res.push(...getEverydayData(jsonSchema))
+    res.push('<!-- 带详细时间 -->',...getEverydayData(jsonSchema, true))
     // console.log('------------');
     // printDataByTask(jsonSchema)
     return res.join('\n')
