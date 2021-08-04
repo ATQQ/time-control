@@ -24,7 +24,7 @@ function outputJson(content) {
     return JSON.stringify(getJSON(content))
 }
 
-function outPutMarkdown(jsonSchema) {
+function outPutMarkdown(jsonSchema,withTime = false) {
     // 从小到大排
     jsonSchema = jsonSchema.sort((a, b) => {
         const d1 = new Date(a.title)
@@ -32,10 +32,7 @@ function outPutMarkdown(jsonSchema) {
         return d1 - d2
     })
     const res = []
-    res.push(...getEverydayData(jsonSchema))
-    res.push('<!-- 带详细时间 -->',...getEverydayData(jsonSchema, true))
-    // console.log('------------');
-    // printDataByTask(jsonSchema)
+    res.push(...getEverydayData(jsonSchema, withTime))
     return res.join('\n')
 }
 

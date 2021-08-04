@@ -17,6 +17,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
     .option('-o, --output', 'Export analysis results')
     .option('-j, --json', 'Export result as json description file')
     .option('-m, --markdown', 'Export the result as a markdown file')
+    .option('-t, --time', 'Export the result with time')
     .option('-p, --page', 'Export the result as a page')
     .option('-D, --day [date]', 'One day')
     .option('-W, --week [date]', 'One week')
@@ -24,7 +25,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
     .option('-Y, --year [date]', 'One year')
     .option('-R, --range [startDate] [endDate]', 'A time period')
     .action((filenames, cmdObj) => {
-        const { output, json, markdown } = cmdObj
+        const { output, json, markdown, time } = cmdObj
 
         // 导出
         if (output) {
@@ -39,7 +40,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
                 createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
             }
             if (markdown) {
-                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content)), false)
+                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content),time), false)
             }
         }
     })
