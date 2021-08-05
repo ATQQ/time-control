@@ -36,6 +36,9 @@ function outPutMarkdown(jsonSchema,withTime = false) {
     return res.join('\n')
 }
 
+function outPutReport(jsonSchema){
+
+}
 
 function printDataByTask(timeDes) {
     const tasks = timeDes.reduce((pre, oneDay) => {

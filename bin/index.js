@@ -3,7 +3,7 @@ const path = require('path')
 const json = require('../package.json');
 const commander = require('commander');
 const { initProject, createTemplateFIle } = require('../src/template');
-const { getFilesContent, getFilePath, createFile, getJSON } = require('../src/utils');
+const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange } = require('../src/utils');
 const { outputJson, outPutMarkdown } = require('../src/output');
 
 // 命令执行目录
@@ -19,14 +19,14 @@ commander.arguments('<filenames...>') // 多个文件/目录
     .option('-m, --markdown', 'Export the result as a markdown file')
     .option('-t, --time', 'Export the result with time')
     .option('-p, --page', 'Export the result as a page')
+    .option('-r, --report', 'Export the result as a md report')
     .option('-D, --day [date]', 'One day')
     .option('-W, --week [date]', 'One week')
     .option('-M, --month [date]', 'One month')
     .option('-Y, --year [date]', 'One year')
-    .option('-R, --range [startDate] [endDate]', 'A time period')
+    .option('-R, --range [startDate_endDate]', 'A time period')
     .action((filenames, cmdObj) => {
-        const { output, json, markdown, time } = cmdObj
-
+        const { output, json, markdown, time,report } = cmdObj
         // 导出
         if (output) {
             let outFileName = 'res'
@@ -41,6 +41,13 @@ commander.arguments('<filenames...>') // 多个文件/目录
             }
             if (markdown) {
                 createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content),time), false)
+            }
+            if(report){
+                const {day,week,month,year,range} = cmdObj
+                if(range){
+                    const [startTime,endTime] = range.split('_')
+                    let data = getJSONByRange(content,startTime,endTime)
+                }
             }
         }
     })

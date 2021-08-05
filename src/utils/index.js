@@ -58,6 +58,22 @@ function getJSON(fileContent) {
     return resData
 }
 
+function getJSONByRange(fileContent, startTime, endTime) {
+    let jsonSchema = getJSON(fileContent)
+    // 从小到大排
+    jsonSchema = jsonSchema.sort((a, b) => {
+        const d1 = new Date(a.title)
+        const d2 = new Date(b.title)
+        return d1 - d2
+    }).filter(v => {
+        const d = new Date(v.title)
+        const s = new Date(startTime)
+        const e = new Date(endTime)
+        return d >= s && d <= e
+    })
+    return jsonSchema
+}
+
 /**
  * 创建一个不存在的目录
  * @param {string} path 
@@ -137,5 +153,6 @@ module.exports = {
     getFileContent,
     createFile,
     getFilesContent,
-    getFilePath
+    getFilePath,
+    getJSONByRange
 }
