@@ -46,7 +46,11 @@ commander.arguments('<filenames...>') // 多个文件/目录
                 const {day,week,month,year,range} = cmdObj
                 if(range){
                     const [startTime,endTime] = range.split('_')
-                    createFile(getFilePath(cwd, `report-${outFileName}.md`),outPutReport(getJSONByRange(content,startTime,endTime)),false)
+                    // createFile(getFilePath(cwd, `report-${outFileName}.md`),outPutReport(getJSONByRange(content,startTime,endTime)),false)
+                    const outPutPath = getFilePath(cwd, `report-${outFileName}.md`)
+                    const json = getJSONByRange(content,startTime,endTime)
+                    const data = outPutReport(json)
+                    createFile(outPutPath,data,false)
                 }
             }
         }

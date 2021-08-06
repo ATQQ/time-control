@@ -53,13 +53,14 @@ function outPutReport(jsonSchema){
     const tasks = allTasks.reduce((pre,current)=>{
         if(pre.length===0){
             pre.push(current)
+            return pre
         }
         let sameTask = pre.find(v=>v.title===current.title)
         if(!sameTask){
             pre.push(current)
-        }else{
-            sameTask.things.push(...current.things)
+            return pre
         }
+        sameTask.things.push(...current.things)
         return pre
     },[])
 
