@@ -4,7 +4,7 @@ const json = require('../package.json');
 const commander = require('commander');
 const { initProject, createTemplateFIle } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange } = require('../src/utils');
-const { outputJson, outPutMarkdown } = require('../src/output');
+const { outputJson, outPutMarkdown,outPutReport } = require('../src/output');
 
 // 命令执行目录
 const cwd = process.cwd()
@@ -46,7 +46,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
                 const {day,week,month,year,range} = cmdObj
                 if(range){
                     const [startTime,endTime] = range.split('_')
-                    let data = getJSONByRange(content,startTime,endTime)
+                    createFile(getFilePath(cwd, `report-${outFileName}.md`),outPutReport(getJSONByRange(content,startTime,endTime)),false)
                 }
             }
         }

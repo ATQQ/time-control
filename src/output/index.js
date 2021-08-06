@@ -37,7 +37,47 @@ function outPutMarkdown(jsonSchema,withTime = false) {
 }
 
 function outPutReport(jsonSchema){
+    const res = []
+    let sumTime = 0
+    const startDate = jsonSchema[0].title
+    const endDate = jsonSchema[jsonSchema.length-1].title
+    // 时间
+    res.push(`# ${startDate} 至 ${endDate}`)
 
+    // 过滤出所有的tasks
+    const allTasks = jsonSchema.reduce((pre,current)=>{
+        return pre.concat(current.tasks)
+    },[])
+
+    // 合并相同的任务
+    const tasks = allTasks.reduce((pre,current)=>{
+        if(pre.length===0){
+            pre.push(current)
+        }
+        let sameTask = pre.find(v=>v.title===current.title)
+        if(!sameTask){
+            pre.push(current)
+        }else{
+            sameTask.things.push(...current.things)
+        }
+        return pre
+    },[])
+
+    for (const taskItem of tasks) {
+        res.push('')
+        res.push(`## ${taskItem.title}`)
+        let taskTime = 0
+        let things = taskItem.things.map(thing=>{
+            const {time,content} = thing
+            taskTime += (+time)
+            return `* ${content}`
+        })
+        res.push(`>耗时：${taskTime.toFixed(2)}`)
+        res.push(...things)
+        sumTime += taskTime
+    }
+    res.splice(1,0,`**总耗时** ${sumTime.toFixed(2)}`)
+    return res.join('\n')
 }
 
 function printDataByTask(timeDes) {
@@ -109,5 +149,6 @@ function getEverydayData(timeDesc, withTime = false) {
 }
 module.exports = {
     outputJson,
-    outPutMarkdown
+    outPutMarkdown,
+    outPutReport
 }
