@@ -24,8 +24,8 @@ commander.arguments('<filenames...>') // 多个文件/目录
     .option('-p, --page', 'Export the result as a page')
     .option('-r, --report', 'Export the result as a md report')
     .option('-D, --day [date]', 'One day')
-    .option('-M, --month [date]', 'One month')
-    .option('-Y, --year [date]', 'One year')
+    .option('-M, --month [month]', 'One month')
+    .option('-Y, --year [year]', 'One year')
     .option('-R, --range [startDate_endDate]', 'A time period')
     .action((filenames, cmdObj) => {
         const { output, json, markdown, time, report } = cmdObj
@@ -71,6 +71,7 @@ commander.arguments('<filenames...>') // 多个文件/目录
                     return output(`${year}-01-01`, `${year}-12-31`)
                 }
                 if (month) {
+                    const year = new Date().getFullYear()
                     return output(`${year}-${month}-01`, `${year}-${month}-${new Date(year, month, 0).getDate()}`)
                 }
             }
