@@ -4,7 +4,7 @@ const json = require('../package.json');
 const commander = require('commander');
 const { initProject, createTemplateFIle } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange } = require('../src/utils');
-const { outputJson, outPutMarkdown,outPutReport } = require('../src/output');
+const { outputJson, outPutMarkdown, outPutReport } = require('../src/output');
 
 // 命令执行目录
 const cwd = process.cwd()
@@ -21,12 +21,11 @@ commander.arguments('<filenames...>') // 多个文件/目录
     .option('-p, --page', 'Export the result as a page')
     .option('-r, --report', 'Export the result as a md report')
     .option('-D, --day [date]', 'One day')
-    .option('-W, --week [date]', 'One week')
     .option('-M, --month [date]', 'One month')
     .option('-Y, --year [date]', 'One year')
     .option('-R, --range [startDate_endDate]', 'A time period')
     .action((filenames, cmdObj) => {
-        const { output, json, markdown, time,report } = cmdObj
+        const { output, json, markdown, time, report } = cmdObj
         // 导出
         if (output) {
             let outFileName = 'res'
@@ -40,17 +39,36 @@ commander.arguments('<filenames...>') // 多个文件/目录
                 createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
             }
             if (markdown) {
-                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content),time), false)
+                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content), time), false)
             }
-            if(report){
-                const {day,week,month,year,range} = cmdObj
-                if(range){
-                    const [startTime,endTime] = range.split('_')
-                    // createFile(getFilePath(cwd, `report-${outFileName}.md`),outPutReport(getJSONByRange(content,startTime,endTime)),false)
+            if (report) {
+                const { day, month, year, range } = cmdObj
+                const output = (s,e)=>{
                     const outPutPath = getFilePath(cwd, `report-${outFileName}.md`)
-                    const json = getJSONByRange(content,startTime,endTime)
+                    const json = getJSONByRange(content, s, e)
+                    if(json.length===0){
+                        console.log('没有符合条件的数据');
+                        return
+                    }
                     const data = outPutReport(json)
-                    createFile(outPutPath,data,false)
+                    createFile(outPutPath, data, false)
+                    console.log(`导出成功`);
+                }
+                if (range) {
+                    const [startTime, endTime] = range.split('_')
+                    return output(startTime,endTime)
+                }
+                if(day){
+                    return output(day,day)
+                }
+                if(year && month){
+                    return output(`${year}-${month}-01`,`${year}-${month}-${new Date(year,month,0).getDate()}`)
+                }
+                if(year){
+                    return output(`${year}-01-01`,`${year}-12-31`)
+                }
+                if(month){
+                    return output(`${year}-${month}-01`,`${year}-${month}-${new Date(year,month,0).getDate()}`)
                 }
             }
         }
