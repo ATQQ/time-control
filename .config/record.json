@@ -1,11 +1,1 @@
-{
-    "recordFilepath": "",
-    "tasks": [],
-    "defaultTaskIdx": 0,
-    "thing": {
-        "name": "",
-        "startTime": "2021-01-01",
-        "endTime": "2021-12-31",
-        "pauseTime": "2021-12-26"
-    }
-}
+{"recordFilepath":"/Users/sugar/Documents/fe-project/time-control/test.md","tasks":["测试"],"defaultTaskIdx":0,"thing":{"name":"abc","startTime":"2021-08-08 22:18:19"}}

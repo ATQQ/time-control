@@ -2,10 +2,10 @@
 const path = require('path')
 const json = require('../package.json');
 const commander = require('commander');
-const { initProject, createTemplateFIle } = require('../src/template');
+const { initProject, createTemplateFile } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange } = require('../src/utils');
-const { outputJson, outPutMarkdown, outPutReport } = require('../src/output');
-const { writeFileSync } = require('fs');
+const { outputJson, outPutMarkdown, outPutReport, writeRecord } = require('../src/output');
+const { writeFileSync, existsSync } = require('fs');
 
 // 命令执行目录
 const cwd = process.cwd()
@@ -99,7 +99,7 @@ commander.command("create <filename>", {})
     .alias('c')
     .description('create template note file')
     .action((filename) => {
-        if (createTemplateFIle(cwd, filename)) {
+        if (createTemplateFile(cwd, filename)) {
             console.log(`${filename} 创建成功`);
             return
         }
@@ -110,38 +110,127 @@ commander.command("create <filename>", {})
  * 创建任务、切换任务、查看任务列表
  */
 commander.command("task [name]")
-    .alias('t')
+    .option('-d, --del', 'Delete task or thing')
+    // .alias('t')
     .description('check tasks/add task/checkout task')
-    .action((name) => {
+    .action((name, cmdObj) => {
         const config = require(configPath)
         const { tasks, defaultTaskIdx } = config
+
+        const { del } = cmdObj
         const idx = tasks.findIndex(v => v === name)
-        if(!name){
-            if(tasks.length===0){
+        if (!name) {
+            if (tasks.length === 0) {
                 console.log('no tasks, you can use command add task');
                 console.log('timec task [name]');
-                return 
+                return
             }
-            tasks.forEach((v,i)=>{
+            tasks.forEach((v, i) => {
                 let mark = '[ ]'
-                if(i===+defaultTaskIdx){
+                if (i === +defaultTaskIdx) {
                     mark = '[*]'
                 }
-                console.log(mark,v);
+                console.log(mark, v);
             })
             return
         }
         if (idx === -1) {
+            if (del) {
+                console.log(`${name} not exist!!!`);
+                return
+            }
             tasks.push(name)
-            if(tasks.length===1){
+            if (tasks.length === 1) {
                 config.defaultTaskIdx = 0
             }
             console.log('add task success');
-        }else{
-            config.defaultTaskIdx = idx
-            console.log('now use task：',tasks[idx]);
+        } else {
+            if (del) {
+                tasks.splice(idx, 1)
+                console.log(`del ${name} success`);
+                config.defaultTaskIdx = tasks.length ? 0 : -1
+                if (config.defaultTaskIdx === 0) {
+                    console.log('now use task：', tasks[config.defaultTaskIdx]);
+                }
+            } else {
+                config.defaultTaskIdx = idx
+                console.log('now use task：', tasks[idx]);
+            }
         }
-        writeFileSync(configPath,JSON.stringify(config))
+        writeFileSync(configPath, JSON.stringify(config))
+    })
+
+/**
+ * 更改默认记录文件的位置
+ */
+commander.command("upPath <recordFilepath>")
+    // .alias('urp')
+    .description('update config recordFilepath')
+    .action((recordFilePath) => {
+        const config = require(configPath)
+        const fullPath = path.resolve(cwd, recordFilePath)
+        config.recordFilepath = fullPath
+        if (!existsSync(fullPath)) {
+            // 自动创建空文件
+            createFile(fullPath, '', false)
+        }
+        writeFileSync(configPath, JSON.stringify(config))
+        console.log('set recordFilePath success：', fullPath);
+    })
+
+/**
+ * 更改默认记录文件的位置
+ */
+commander.command("thing [name]")
+    .option('-s, --stop', 'stop a thing ')
+    .description('update config recordFilepath')
+    .action((name, cmdObj) => {
+        const config = require(configPath)
+        const { thing, recordFilepath, tasks, defaultTaskIdx } = config
+        const task = tasks[defaultTaskIdx]
+        const s = new Date(thing.startTime)
+
+        if (!existsSync(recordFilepath)) {
+            console.log(`${recordFilepath} is not exist`);
+            console.log('you can use "timec upPath <recordFilepath>" set it');
+            return
+        }
+        if (!task) {
+            console.log('not set task');
+            console.log('you can use "timec task [name]" set it');
+            return
+        }
+        
+        if (!name) {
+            if (!thing.name) {
+                console.log('Events not in progress');
+                return
+            }
+            const { stop } = cmdObj
+            if (stop) {
+                writeRecord(recordFilepath, task, thing.name, thing.startTime)
+                thing.name = ''
+                thing.startTime = ''
+                writeFileSync(configPath, JSON.stringify(config))
+                return
+            }
+            console.log('------');
+            console.log(`-name:     ${thing.name}`);
+            console.log(`-start:    ${s.format('yyyy-MM-dd hh:mm:ss')}`);
+            // TODO：时分秒
+            console.log(`-duration: ${Date.now() - s} mss`);
+            console.log('------');
+            return
+        }
+
+
+        // TODO：log一下上一个任务耗时
+        // 记录到文件中
+        writeRecord(recordFilePath, task, thing.name, thing.startTime)
+
+        thing.name = name
+        thing.startTime = new Date().getTime()
+        writeFileSync(configPath, JSON.stringify(config))
     })
 
 commander.parse(process.argv)

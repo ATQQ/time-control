@@ -35,11 +35,11 @@ function initProject(cwd, projectName) {
  * @param {string} cwd 文件目录
  * @param {string} filename 文件名称
  */
-function createTemplateFIle(cwd, filename) {
+function createTemplateFile(cwd, filename) {
     return createFile(path.resolve(cwd, filename), demoContent)
 }
 
 module.exports = {
     initProject,
-    createTemplateFIle
+    createTemplateFile
 }

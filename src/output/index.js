@@ -1,4 +1,5 @@
-const { getJSON } = require("../utils")
+const { getJSON, getFileContent } = require("../utils")
+const { writeFileSync } = require('fs')
 Date.prototype.format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1,                 //月份 
@@ -24,7 +25,7 @@ function outputJson(content) {
     return JSON.stringify(getJSON(content))
 }
 
-function outPutMarkdown(jsonSchema,withTime = false) {
+function outPutMarkdown(jsonSchema, withTime = false) {
     // 从小到大排
     jsonSchema = jsonSchema.sort((a, b) => {
         const d1 = new Date(a.title)
@@ -36,40 +37,40 @@ function outPutMarkdown(jsonSchema,withTime = false) {
     return res.join('\n')
 }
 
-function outPutReport(jsonSchema){
+function outPutReport(jsonSchema) {
     const res = []
     let sumTime = 0
     const startDate = jsonSchema[0].title
-    const endDate = jsonSchema[jsonSchema.length-1].title
+    const endDate = jsonSchema[jsonSchema.length - 1].title
     // 时间
     res.push(`# ${startDate} 至 ${endDate}`)
 
     // 过滤出所有的tasks
-    const allTasks = jsonSchema.reduce((pre,current)=>{
+    const allTasks = jsonSchema.reduce((pre, current) => {
         return pre.concat(current.tasks)
-    },[])
+    }, [])
 
     // 合并相同的任务
-    const tasks = allTasks.reduce((pre,current)=>{
-        if(pre.length===0){
+    const tasks = allTasks.reduce((pre, current) => {
+        if (pre.length === 0) {
             pre.push(current)
             return pre
         }
-        let sameTask = pre.find(v=>v.title===current.title)
-        if(!sameTask){
+        let sameTask = pre.find(v => v.title === current.title)
+        if (!sameTask) {
             pre.push(current)
             return pre
         }
         sameTask.things.push(...current.things)
         return pre
-    },[])
+    }, [])
 
     for (const taskItem of tasks) {
         res.push('')
         res.push(`## ${taskItem.title}`)
         let taskTime = 0
-        let things = taskItem.things.map(thing=>{
-            const {time,content} = thing
+        let things = taskItem.things.map(thing => {
+            const { time, content } = thing
             taskTime += (+time)
             return `* ${content}`
         })
@@ -77,7 +78,7 @@ function outPutReport(jsonSchema){
         res.push(...things)
         sumTime += taskTime
     }
-    res.splice(1,0,`**总耗时** ${sumTime.toFixed(2)}`)
+    res.splice(1, 0, `**总耗时** ${sumTime.toFixed(2)}`)
     return res.join('\n')
 }
 
@@ -148,8 +149,37 @@ function getEverydayData(timeDesc, withTime = false) {
     }
     return res
 }
+
+function writeRecord(filePath, task, thing, startTime) {
+    const json = getJSON(getFileContent(filePath))
+    const date = new Date(startTime)
+    const title = date.format('yyyy-MM-dd')
+    const dayIdx = json.findIndex(v => v.title === title)
+
+    const hours = ((Date.now() - date.getTime()) / 3600000).toFixed(5)
+    // 今天的首个数据
+    if (dayIdx === -1) {
+        const item = {
+            title,
+            tasks: [
+                {
+                    title: task,
+                    things: [
+                        {
+                            content: `${thing} ${hours}`,
+                            time: '0'
+                        }
+                    ]
+                }
+            ]
+        }
+        json.push(item)
+        return writeFileSync(filePath, outPutMarkdown(json, false))
+    }
+}
 module.exports = {
     outputJson,
     outPutMarkdown,
-    outPutReport
+    outPutReport,
+    writeRecord
 }
