@@ -212,8 +212,7 @@ commander.command("thing [name]")
                 writeRecord(recordFilepath, task, thing.name, thing.startTime)
                 thing.name = ''
                 thing.startTime = ''
-                // TODO:
-                // writeFileSync(configPath, JSON.stringify(config))
+                writeFileSync(configPath, JSON.stringify(config))
                 return
             }
             console.log('------');
@@ -224,12 +223,18 @@ commander.command("thing [name]")
             return
         }
 
+        if (thing.name) {
+            // log上一个任务耗时
+            console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
 
-        // log上一个任务耗时
-        console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
-
-        // 记录到文件中
-        writeRecord(recordFilepath, task, thing.name, thing.startTime)
+            // 记录到文件中
+            writeRecord(recordFilepath, task, thing.name, thing.startTime)
+        }else{
+            console.log('---new thing---');
+            console.log(`-name:     ${thing.name}`);
+            console.log(`-start:    ${new Date().format('yyyy-MM-dd hh:mm:ss')}`);
+            console.log('------');
+        }
 
         thing.name = name
         thing.startTime = new Date().getTime()
