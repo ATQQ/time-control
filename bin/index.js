@@ -3,7 +3,7 @@ const path = require('path')
 const json = require('../package.json');
 const commander = require('commander');
 const { initProject, createTemplateFile } = require('../src/template');
-const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange } = require('../src/utils');
+const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange, mmsToNormal } = require('../src/utils');
 const { outputJson, outPutMarkdown, outPutReport, writeRecord } = require('../src/output');
 const { writeFileSync, existsSync } = require('fs');
 
@@ -179,7 +179,7 @@ commander.command("upPath <recordFilepath>")
     })
 
 /**
- * 更改默认记录文件的位置
+ * 开始/结束具体的事务
  */
 commander.command("thing [name]")
     .option('-s, --stop', 'stop a thing ')
@@ -200,7 +200,7 @@ commander.command("thing [name]")
             console.log('you can use "timec task [name]" set it');
             return
         }
-        
+
         if (!name) {
             if (!thing.name) {
                 console.log('Events not in progress');
@@ -208,25 +208,28 @@ commander.command("thing [name]")
             }
             const { stop } = cmdObj
             if (stop) {
+                console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
                 writeRecord(recordFilepath, task, thing.name, thing.startTime)
                 thing.name = ''
                 thing.startTime = ''
-                writeFileSync(configPath, JSON.stringify(config))
+                // TODO:
+                // writeFileSync(configPath, JSON.stringify(config))
                 return
             }
             console.log('------');
             console.log(`-name:     ${thing.name}`);
             console.log(`-start:    ${s.format('yyyy-MM-dd hh:mm:ss')}`);
-            // TODO：时分秒
-            console.log(`-duration: ${Date.now() - s} mss`);
+            console.log(`-duration: ${mmsToNormal(Date.now() - s)}`);
             console.log('------');
             return
         }
 
 
-        // TODO：log一下上一个任务耗时
+        // log上一个任务耗时
+        console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
+
         // 记录到文件中
-        writeRecord(recordFilePath, task, thing.name, thing.startTime)
+        writeRecord(recordFilepath, task, thing.name, thing.startTime)
 
         thing.name = name
         thing.startTime = new Date().getTime()

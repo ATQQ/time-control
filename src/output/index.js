@@ -155,9 +155,8 @@ function writeRecord(filePath, task, thing, startTime) {
     const date = new Date(startTime)
     const title = date.format('yyyy-MM-dd')
     const dayIdx = json.findIndex(v => v.title === title)
-
     const hours = ((Date.now() - date.getTime()) / 3600000).toFixed(5)
-    // 今天的首个数据
+    // 当天的首个数据
     if (dayIdx === -1) {
         const item = {
             title,
@@ -176,6 +175,33 @@ function writeRecord(filePath, task, thing, startTime) {
         json.push(item)
         return writeFileSync(filePath, outPutMarkdown(json, false))
     }
+    const dataItem = json[dayIdx]
+    const taskIdx = dataItem.tasks.findIndex(v => v.title === task)
+    // 新的任务
+    if (taskIdx === -1) {
+        dataItem.tasks.push({
+            title: task,
+            things: [
+                {
+                    content: `${thing} ${hours}`,
+                    time: '0'
+                }
+            ]
+        })
+        return writeFileSync(filePath, outPutMarkdown(json, false))
+    }
+    const taskItem = dataItem.tasks[taskIdx]
+    taskItem.things.push({
+        content: `${thing} ${hours}`,
+        time: '0'
+    })
+    
+    // TODO 特殊处理,元数据content不带time
+    // const things = json.reduce(v=>{
+    //     return 
+    // },[])
+    console.log(outPutMarkdown(json, false));
+    // return writeFileSync(filePath, outPutMarkdown(json, false))
 }
 module.exports = {
     outputJson,

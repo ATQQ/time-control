@@ -37,7 +37,7 @@ function getJSON(fileContent) {
         if (line.startsWith('* ')) {
             const task = item.tasks.pop()
             const { things } = task
-            const rTime = /((0.\d*)|(\d*))?$/
+            const rTime = /((\d+.\d*)|(\d*))?$/
 
             const time = line.match(rTime)[0] || '0'
             let step = -1, text = ''
@@ -147,6 +147,20 @@ function getNoRepeatFilePath(originPath) {
     }
     return getFilePath(dir, `${name}-${num}${ext}`)
 }
+
+/**
+ * 毫秒转时分秒
+ */
+function mmsToNormal(mms) {
+    mms = (mms / 1000) >> 0
+    const day = (mms / (24 * 60 * 60)) >> 0
+    mms -= day * 24 * 60 * 60
+    const hour = (mms / (60 * 60)) >> 0
+    mms -= hour * 60 * 60
+    const minute = (mms / 60) >> 0
+    mms -= minute * 60
+    return `${day}天 ${hour}时 ${minute}分 ${mms}秒`
+}
 module.exports = {
     getJSON,
     createDir,
@@ -154,5 +168,6 @@ module.exports = {
     createFile,
     getFilesContent,
     getFilePath,
-    getJSONByRange
+    getJSONByRange,
+    mmsToNormal
 }
