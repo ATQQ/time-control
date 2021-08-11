@@ -152,14 +152,19 @@ function getNoRepeatFilePath(originPath) {
  * 毫秒转时分秒
  */
 function mmsToNormal(mms) {
+    let str = ''
     mms = (mms / 1000) >> 0
     const day = (mms / (24 * 60 * 60)) >> 0
+    day && (str += `${day}天 `)
     mms -= day * 24 * 60 * 60
     const hour = (mms / (60 * 60)) >> 0
+    hour && (str += `${hour}时 `)
     mms -= hour * 60 * 60
     const minute = (mms / 60) >> 0
+    minute && (str += `${minute}分 `)
     mms -= minute * 60
-    return `${day}天 ${hour}时 ${minute}分 ${mms}秒`
+    str += `${mms}秒`
+    return str
 }
 module.exports = {
     getJSON,

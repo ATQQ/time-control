@@ -1,4 +1,4 @@
-const { getJSON, getFileContent } = require("../utils")
+const { getJSON, getFileContent, mmsToNormal } = require("../utils")
 const { writeFileSync } = require('fs')
 Date.prototype.format = function (fmt) {
     var o = {
@@ -74,11 +74,11 @@ function outPutReport(jsonSchema) {
             taskTime += (+time)
             return `* ${content}`
         })
-        res.push(`>耗时：${taskTime.toFixed(2)}`)
+        res.push(`>耗时：${mmsToNormal(taskTime * 1000 * 3600)}`)
         res.push(...things)
         sumTime += taskTime
     }
-    res.splice(1, 0, `**总耗时** ${sumTime.toFixed(2)}`)
+    res.splice(1, 0, `**总耗时** ${mmsToNormal(sumTime * 1000 * 3600)}`)
     return res.join('\n')
 }
 
