@@ -143,18 +143,18 @@ commander.command("task [name]")
             if (tasks.length === 1) {
                 config.defaultTaskIdx = 0
             }
-            console.log('add task success');
+            console.log(`add task（${name}）success`);
         } else {
             if (del) {
                 tasks.splice(idx, 1)
                 console.log(`del ${name} success`);
-                config.defaultTaskIdx = tasks.length ? 0 : -1
-                if (config.defaultTaskIdx === 0) {
-                    console.log('now use task：', tasks[config.defaultTaskIdx]);
+                config.defaultTaskIdx = defaultTaskIdx >= idx ? defaultTaskIdx - 1 : defaultTaskIdx
+                if (config.defaultTaskIdx >= 0) {
+                    console.log('now use task:', tasks[config.defaultTaskIdx]);
                 }
             } else {
                 config.defaultTaskIdx = idx
-                console.log('now use task：', tasks[idx]);
+                console.log('now use task:', tasks[idx]);
             }
         }
         writeFileSync(configPath, JSON.stringify(config))
@@ -208,36 +208,45 @@ commander.command("thing [name]")
             }
             const { stop } = cmdObj
             if (stop) {
-                console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
+                // log上一个任务耗时
+                console.log('---finish thing---');
+                console.log(`* name:     ${thing.name}`);
+                console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+                console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
+                console.log('------------------');
                 writeRecord(recordFilepath, task, thing.name, thing.startTime)
                 thing.name = ''
                 thing.startTime = ''
                 writeFileSync(configPath, JSON.stringify(config))
                 return
             }
-            console.log('------');
-            console.log(`-name:     ${thing.name}`);
-            console.log(`-start:    ${s.format('yyyy-MM-dd hh:mm:ss')}`);
-            console.log(`-duration: ${mmsToNormal(Date.now() - s)}`);
-            console.log('------');
+            console.log('------------------');
+            console.log(`* name:     ${thing.name}`);
+            console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+            console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
+            console.log('------------------');
             return
         }
 
         if (thing.name) {
             // log上一个任务耗时
-            console.log(`事务耗时:${thing.name} ${mmsToNormal(Date.now() - s)}`);
-
+            console.log('---finish thing---');
+            console.log(`* name:     ${thing.name}`);
+            console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+            console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
+            console.log('------------------');
             // 记录到文件中
             writeRecord(recordFilepath, task, thing.name, thing.startTime)
-        }else{
-            console.log('---new thing---');
-            console.log(`-name:     ${thing.name}`);
-            console.log(`-start:    ${new Date().format('yyyy-MM-dd hh:mm:ss')}`);
-            console.log('------');
         }
 
         thing.name = name
         thing.startTime = new Date().getTime()
+
+        console.log('-----new thing----');
+        console.log(`* name:     ${thing.name}`);
+        console.log(`* start:    ${new Date().format('yyyy-MM-dd hh:mm:ss')}`);
+        console.log('------------------');
+
         writeFileSync(configPath, JSON.stringify(config))
     })
 
