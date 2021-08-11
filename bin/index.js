@@ -15,20 +15,19 @@ const configPath = path.join(__dirname, '../.config/record.json')
 // 设置版号
 commander.version(json.version)
 
+const outFileName = 'timec-res'
+
 // 导出
-commander.arguments('<filenames...>') // 多个文件/目录
+// TODO:待改造
+commander.arguments('[filenames...]') // 多个文件/目录
     .option('-o, --output', 'Export analysis results')
     .option('-j, --json', 'Export result as json description file')
     .option('-m, --markdown', 'Export the result as a markdown file')
     .option('-t, --time', 'Export the result with time')
-    .option('-p, --page', 'Export the result as a page')
-    .option('-r, --report', 'Export the result as a md report')
-    .option('-D, --day [date]', 'One day')
-    .option('-M, --month [month]', 'One month')
-    .option('-Y, --year [year]', 'One year')
-    .option('-R, --range [startDate_endDate]', 'A time period')
+    // .option('-p, --page', 'Export the result as a page')
     .action((filenames, cmdObj) => {
-        const { output, json, markdown, time, report } = cmdObj
+        const { output, json, markdown, time } = cmdObj
+
         // 导出
         if (output) {
             let outFileName = 'res'
@@ -43,37 +42,6 @@ commander.arguments('<filenames...>') // 多个文件/目录
             }
             if (markdown) {
                 createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content), time), false)
-            }
-            if (report) {
-                const { day, month, year, range } = cmdObj
-                const output = (s, e) => {
-                    const outPutPath = getFilePath(cwd, `report-${outFileName}.md`)
-                    const json = getJSONByRange(content, s, e)
-                    if (json.length === 0) {
-                        console.log('没有符合条件的数据');
-                        return
-                    }
-                    const data = outPutReport(json)
-                    createFile(outPutPath, data, false)
-                    console.log(`导出成功`);
-                }
-                if (range) {
-                    const [startTime, endTime] = range.split('_')
-                    return output(startTime, endTime)
-                }
-                if (day) {
-                    return output(day, day)
-                }
-                if (year && month) {
-                    return output(`${year}-${month}-01`, `${year}-${month}-${new Date(year, month, 0).getDate()}`)
-                }
-                if (year) {
-                    return output(`${year}-01-01`, `${year}-12-31`)
-                }
-                if (month) {
-                    const year = new Date().getFullYear()
-                    return output(`${year}-${month}-01`, `${year}-${month}-${new Date(year, month, 0).getDate()}`)
-                }
             }
         }
     })
@@ -111,7 +79,6 @@ commander.command("create <filename>", {})
  */
 commander.command("task [name]")
     .option('-d, --del', 'Delete task or thing')
-    // .alias('t')
     .description('check tasks/add task/checkout task')
     .action((name, cmdObj) => {
         const config = require(configPath)
@@ -164,7 +131,6 @@ commander.command("task [name]")
  * 更改默认记录文件的位置
  */
 commander.command("upPath <recordFilepath>")
-    // .alias('urp')
     .description('update config recordFilepath')
     .action((recordFilePath) => {
         const config = require(configPath)
@@ -183,7 +149,7 @@ commander.command("upPath <recordFilepath>")
  */
 commander.command("thing [name]")
     .option('-s, --stop', 'stop a thing ')
-    .description('update config recordFilepath')
+    .description('manage things')
     .action((name, cmdObj) => {
         const config = require(configPath)
         const { thing, recordFilepath, tasks, defaultTaskIdx } = config
@@ -249,5 +215,61 @@ commander.command("thing [name]")
 
         writeFileSync(configPath, JSON.stringify(config))
     })
+
+
+commander.command("report [filenames...]")
+    .description('Automatic generation of time management reports')
+    .option('-D, --day [date]', 'One day')
+    .option('-M, --month [month]', 'One month')
+    .option('-Y, --year [year]', 'One year')
+    .option('-R, --range [startDate_endDate]', 'A time period')
+    .action((filenames, cmdObj) => {
+        const config = require(configPath)
+        const { recordFilepath } = config
+
+        if (filenames.length === 0 && !existsSync(recordFilepath)) {
+            console.log(`${recordFilepath} is not exist`);
+            console.log('you can use "timec upPath <recordFilepath>" set it');
+            return
+        }
+
+        const content = getFilesContent(filenames.length === 0 ? [recordFilepath] : filenames.map(filename => {
+            return getFilePath(cwd, filename)
+        }))
+
+        const { day, month, year, range } = cmdObj
+        const output = (s, e) => {
+            const outPutPath = getFilePath(cwd, `report-${outFileName}.md`)
+            const json = getJSONByRange(content, s, e)
+            if (json.length === 0) {
+                console.log('没有符合条件的数据');
+                return
+            }
+            const data = outPutReport(json)
+            createFile(outPutPath, data, false)
+            console.log(`导出成功`);
+        }
+        if (range) {
+            const [startTime, endTime] = range.split('_')
+            return output(startTime, endTime)
+        }
+        if (day) {
+            return output(day, day)
+        }
+        if (year && month) {
+            return output(`${year}-${month}-01`, `${year}-${month}-${new Date(year, month, 0).getDate()}`)
+        }
+        if (year) {
+            return output(`${year}-01-01`, `${year}-12-31`)
+        }
+        if (month) {
+            const year = new Date().getFullYear()
+            return output(`${year}-${month}-01`, `${year}-${month}-${new Date(year, month, 0).getDate()}`)
+        }
+
+        // 兜底，没有选值(上下1000年,希望代码还在)
+        output('1970-01-01','2970-01-01')
+    })
+
 
 commander.parse(process.argv)
