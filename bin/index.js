@@ -18,31 +18,34 @@ commander.version(json.version)
 const outFileName = 'timec-res'
 
 // 导出
-// TODO:待改造
-commander.arguments('[filenames...]') // 多个文件/目录
-    .option('-o, --output', 'Export analysis results')
+commander.command('output [filenames...]')
     .option('-j, --json', 'Export result as json description file')
     .option('-m, --markdown', 'Export the result as a markdown file')
     .option('-t, --time', 'Export the result with time')
     // .option('-p, --page', 'Export the result as a page')
     .action((filenames, cmdObj) => {
-        const { output, json, markdown, time } = cmdObj
+        const config = require(configPath)
+        const { recordFilepath } = config
 
-        // 导出
-        if (output) {
-            let outFileName = 'res'
-            // 后续逻辑
+        if (filenames.length === 0 && !existsSync(recordFilepath)) {
+            console.log(`${recordFilepath} is not exist`);
+            console.log('you can use "timec upPath <recordFilepath>" set it');
+            return
+        }
 
-            // 获取所有文件的内容
-            const content = getFilesContent(filenames.map(filename => {
-                return getFilePath(cwd, filename)
-            }))
-            if (json) {
-                createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
-            }
-            if (markdown) {
-                createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content), time), false)
-            }
+        // 获取所有文件的内容
+        const content = getFilesContent(filenames.length === 0 ? [recordFilepath] : filenames.map(filename => {
+            return getFilePath(cwd, filename)
+        }))
+        const { json, markdown, time } = cmdObj
+
+        if (json) {
+            createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
+            console.log('导出json成功');
+        }
+        if (markdown) {
+            createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content), time), false)
+            console.log('导出markdown成功');
         }
     })
 
@@ -268,7 +271,7 @@ commander.command("report [filenames...]")
         }
 
         // 兜底，没有选值(上下1000年,希望代码还在)
-        output('1970-01-01','2970-01-01')
+        output('1970-01-01', '2970-01-01')
     })
 
 
