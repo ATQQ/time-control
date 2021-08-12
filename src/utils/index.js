@@ -166,6 +166,19 @@ function mmsToNormal(mms) {
     str += `${mms}秒`
     return str
 }
+
+function getCWD(){
+    return process.cwd()
+}
+
+function getConfig(){
+    return require(path.join(__dirname,'../../.config/record.json'))
+}
+
+function getOutFilename(){
+    return 'timec-res'
+}
+
 module.exports = {
     getJSON,
     createDir,
@@ -174,5 +187,8 @@ module.exports = {
     getFilesContent,
     getFilePath,
     getJSONByRange,
-    mmsToNormal
+    mmsToNormal,
+    getCWD,
+    getConfig,
+    getOutFilename
 }

@@ -3,10 +3,10 @@ const path = require('path')
 const json = require('../package.json');
 const commander = require('commander');
 const { initProject, createTemplateFile } = require('../src/template');
-const { getFilesContent, getFilePath, createFile, getJSON, getJSONByRange, mmsToNormal } = require('../src/utils');
-const { outputJson, outPutMarkdown, outPutReport, writeRecord } = require('../src/output');
+const { getFilesContent, getFilePath, createFile, getJSONByRange, mmsToNormal } = require('../src/utils');
+const { outPutReport, writeRecord } = require('../src/output');
 const { writeFileSync, existsSync } = require('fs');
-
+const {outputCommand} = require('./../src/command')
 // 命令执行目录
 const cwd = process.cwd()
 
@@ -23,31 +23,7 @@ commander.command('output [filenames...]')
     .option('-m, --markdown', 'Export the result as a markdown file')
     .option('-t, --time', 'Export the result with time')
     // .option('-p, --page', 'Export the result as a page')
-    .action((filenames, cmdObj) => {
-        const config = require(configPath)
-        const { recordFilepath } = config
-
-        if (filenames.length === 0 && !existsSync(recordFilepath)) {
-            console.log(`${recordFilepath} is not exist`);
-            console.log('you can use "timec upPath <recordFilepath>" set it');
-            return
-        }
-
-        // 获取所有文件的内容
-        const content = getFilesContent(filenames.length === 0 ? [recordFilepath] : filenames.map(filename => {
-            return getFilePath(cwd, filename)
-        }))
-        const { json, markdown, time } = cmdObj
-
-        if (json) {
-            createFile(getFilePath(cwd, `${outFileName}.json`), outputJson(content), false)
-            console.log('导出json成功');
-        }
-        if (markdown) {
-            createFile(getFilePath(cwd, `${outFileName}.md`), outPutMarkdown(getJSON(content), time), false)
-            console.log('导出markdown成功');
-        }
-    })
+    .action(outputCommand)
 
 /**
  * 初始化项目
