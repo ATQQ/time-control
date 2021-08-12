@@ -1,6 +1,7 @@
 const outputCommand = require('./output')
-
+const initCommand = require('./init')
 
 module.exports = {
-    outputCommand
+    outputCommand,
+    initCommand
 }

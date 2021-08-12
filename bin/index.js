@@ -2,11 +2,11 @@
 const path = require('path')
 const json = require('../package.json');
 const commander = require('commander');
-const { initProject, createTemplateFile } = require('../src/template');
+const { createTemplateFile } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSONByRange, mmsToNormal } = require('../src/utils');
 const { outPutReport, writeRecord } = require('../src/output');
 const { writeFileSync, existsSync } = require('fs');
-const {outputCommand} = require('./../src/command')
+const { outputCommand, initCommand } = require('./../src/command')
 // 命令执行目录
 const cwd = process.cwd()
 
@@ -31,13 +31,7 @@ commander.command('output [filenames...]')
 commander.command("init <projectName>")
     .alias('i')
     .description('init project')
-    .action((projectName) => {
-        if (initProject(cwd, projectName)) {
-            console.log(`初始化 ${projectName} 成功`);
-            return
-        }
-        console.log(`${projectName} 已存在`);
-    })
+    .action(initCommand)
 
 /**
  * 创建一个时间记录模板文件
