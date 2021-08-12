@@ -6,7 +6,7 @@ const { createTemplateFile } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSONByRange, mmsToNormal } = require('../src/utils');
 const { outPutReport, writeRecord } = require('../src/output');
 const { writeFileSync, existsSync } = require('fs');
-const { outputCommand, initCommand } = require('./../src/command')
+const { outputCommand, initCommand, createCommand } = require('./../src/command')
 // 命令执行目录
 const cwd = process.cwd()
 
@@ -39,13 +39,7 @@ commander.command("init <projectName>")
 commander.command("create <filename>", {})
     .alias('c')
     .description('create template note file')
-    .action((filename) => {
-        if (createTemplateFile(cwd, filename)) {
-            console.log(`${filename} 创建成功`);
-            return
-        }
-        console.log(`${filename} 已存在`);
-    })
+    .action(createCommand)
 
 /**
  * 创建任务、切换任务、查看任务列表
