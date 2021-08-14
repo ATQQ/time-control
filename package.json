@@ -10,8 +10,7 @@
     "timec": "./bin/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "test:w": "node test/weekAnalyze/index.js"
+    "lint": "eslint ./src ./bin --fix --ext .js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +25,10 @@
   "homepage": "https://github.com/ATQQ/time-control#readme",
   "dependencies": {
     "commander": "^6.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.0"
   }
 }
