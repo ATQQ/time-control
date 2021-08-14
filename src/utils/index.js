@@ -171,8 +171,14 @@ function getCWD(){
     return process.cwd()
 }
 
+const configPath = path.join(__dirname,'../../.config/record.json')
 function getConfig(){
-    return require(path.join(__dirname,'../../.config/record.json'))
+    return require(configPath)
+}
+
+function updateConfig(cfg){
+    cfg = Object.assign(getConfig(),cfg)
+    return fs.writeFileSync(configPath,JSON.stringify(cfg))
 }
 
 function getOutFilename(){
@@ -190,5 +196,7 @@ module.exports = {
     mmsToNormal,
     getCWD,
     getConfig,
-    getOutFilename
+    getOutFilename,
+    updateConfig,
+    configPath
 }

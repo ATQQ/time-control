@@ -6,7 +6,7 @@ const { createTemplateFile } = require('../src/template');
 const { getFilesContent, getFilePath, createFile, getJSONByRange, mmsToNormal } = require('../src/utils');
 const { outPutReport, writeRecord } = require('../src/output');
 const { writeFileSync, existsSync } = require('fs');
-const { outputCommand, initCommand, createCommand } = require('./../src/command')
+const { outputCommand, initCommand, createCommand, upPathCommand } = require('./../src/command')
 // 命令执行目录
 const cwd = process.cwd()
 
@@ -97,19 +97,9 @@ commander.command("task [name]")
 /**
  * 更改默认记录文件的位置
  */
-commander.command("upPath <recordFilepath>")
+commander.command("upPath [recordFilepath]")
     .description('update config recordFilepath')
-    .action((recordFilePath) => {
-        const config = require(configPath)
-        const fullPath = path.resolve(cwd, recordFilePath)
-        config.recordFilepath = fullPath
-        if (!existsSync(fullPath)) {
-            // 自动创建空文件
-            createFile(fullPath, '', false)
-        }
-        writeFileSync(configPath, JSON.stringify(config))
-        console.log('set recordFilePath success：', fullPath);
-    })
+    .action(upPathCommand)
 
 /**
  * 开始/结束具体的事务
