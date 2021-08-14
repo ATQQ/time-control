@@ -1,7 +1,9 @@
+const chalk = require('chalk');
 const { existsSync } = require('fs');
 const { outPutReport } = require('../output');
 const {
-  getConfig, getFilePath, getJSONByRange, createFile, getFilesContent, getCWD, getOutFilename,
+  getConfig, getFilePath, getJSONByRange,
+  createFile, getFilesContent, getCWD, getOutFilename, print,
 } = require('../utils');
 
 const cwd = getCWD();
@@ -11,8 +13,8 @@ module.exports = function (filenames, cmdObj) {
   const { recordFilepath } = config;
 
   if (filenames.length === 0 && !existsSync(recordFilepath)) {
-    console.log(`${recordFilepath} is not exist`);
-    console.log('you can use "timec upPath <recordFilepath>" set it');
+    print.fail(chalk.bold(recordFilepath), 'not exist');
+    print.advice('use', chalk.yellowBright('timec upPath <recordFilepath>'), 'set it');
     return;
   }
   const content = getFilesContent(filenames.length === 0
@@ -25,12 +27,12 @@ module.exports = function (filenames, cmdObj) {
     const outPutPath = getFilePath(cwd, `report-${outFilename}.md`);
     const json = getJSONByRange(content, s, e);
     if (json.length === 0) {
-      console.log('没有符合条件的数据');
+      print.fail('没有符合条件的数据');
       return;
     }
     const data = outPutReport(json);
     createFile(outPutPath, data, false);
-    console.log('导出成功');
+    print.success('导出成功');
   };
   if (range) {
     const [startTime, endTime] = range.split('_');
@@ -54,7 +56,6 @@ module.exports = function (filenames, cmdObj) {
     output(`${y}-${month}-01`, `${y}-${month}-${new Date(y, month, 0).getDate()}`);
     return;
   }
-
   // 兜底，没有选值(上下1000年,希望代码还在)
   output('1970-01-01', '2970-01-01');
 };

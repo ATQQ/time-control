@@ -1,12 +1,12 @@
+const chalk = require('chalk');
 const { createTemplateFile } = require('../template');
-const { getCWD } = require('../utils');
+const { getCWD, print, getFilePath } = require('../utils');
 
 const cwd = getCWD();
 
 module.exports = function (filename) {
+  const filepath = getFilePath(cwd, filename);
   if (createTemplateFile(cwd, filename)) {
-    console.log(`${filename} 创建成功`);
-    return;
+    print.success(chalk.bold('创建文件'), filepath);
   }
-  console.log(`${filename} 已存在`);
 };

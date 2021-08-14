@@ -24,7 +24,7 @@ Date.prototype.format = function (fmt) {
 };
 
 function outputJson(content) {
-  return JSON.stringify(getJSON(content));
+  return JSON.stringify(getJSON(content), null, 2);
 }
 
 function outPutMarkdown(jsonSchema, withTime = false) {

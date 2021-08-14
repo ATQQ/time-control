@@ -1,4 +1,5 @@
-const { getConfig, updateConfig } = require('../utils');
+const chalk = require('chalk');
+const { getConfig, updateConfig, print } = require('../utils');
 
 module.exports = function (name, cmdObj) {
   const config = getConfig();
@@ -8,39 +9,41 @@ module.exports = function (name, cmdObj) {
   const idx = tasks.findIndex((v) => v === name);
   if (!name) {
     if (tasks.length === 0) {
-      console.log('no tasks, you can use command add task');
-      console.log('timec task [name]');
+      print.fail('no tasks, you can use command add task');
+      print.advice('timec task [name]');
       return;
     }
     tasks.forEach((v, i) => {
-      let mark = '[ ]';
+      let mark = '  ';
       if (i === +defaultTaskIdx) {
-        mark = '[*]';
+        mark = '=>';
+        print(chalk.green(mark), v);
+      } else {
+        print(chalk.grey(mark), v);
       }
-      console.log(mark, v);
     });
     return;
   }
   if (idx === -1) {
     if (del) {
-      console.log(`${name} not exist!!!`);
+      print.fail(chalk.yellowBright(name), 'not exist!!!');
       return;
     }
     tasks.push(name);
     if (tasks.length === 1) {
       config.defaultTaskIdx = 0;
     }
-    console.log(`add task（${name}）success`);
+    print.success('add task', chalk.yellowBright(name));
   } else if (del) {
     tasks.splice(idx, 1);
-    console.log(`del ${name} success`);
+    print.success('delete', chalk.yellowBright(name));
     config.defaultTaskIdx = defaultTaskIdx >= idx ? defaultTaskIdx - 1 : defaultTaskIdx;
     if (config.defaultTaskIdx >= 0) {
-      console.log('now use task:', tasks[config.defaultTaskIdx]);
+      print('now use task:', chalk.yellowBright(tasks[config.defaultTaskIdx]));
     }
   } else {
     config.defaultTaskIdx = idx;
-    console.log('now use task:', tasks[idx]);
+    print('now use task:', chalk.yellowBright(tasks[config.defaultTaskIdx]));
   }
   updateConfig(config);
 };

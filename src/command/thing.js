@@ -1,6 +1,9 @@
+const chalk = require('chalk');
 const { existsSync } = require('fs');
 const { writeRecord } = require('../output');
-const { getConfig, updateConfig, mmsToNormal } = require('../utils');
+const {
+  getConfig, updateConfig, mmsToNormal, print,
+} = require('../utils');
 
 module.exports = function (name, cmdObj) {
   const config = getConfig();
@@ -11,50 +14,50 @@ module.exports = function (name, cmdObj) {
   const s = new Date(thing.startTime);
 
   if (!existsSync(recordFilepath)) {
-    console.log(`${recordFilepath} is not exist`);
-    console.log('you can use "timec upPath <recordFilepath>" set it');
+    print.fail(chalk.bold(recordFilepath), 'not exist');
+    print.advice('use', chalk.yellowBright('timec upPath <recordFilepath>'), 'set it');
     return;
   }
   if (!task) {
-    console.log('not set task');
-    console.log('you can use "timec task [name]" set it');
+    print.fail('task list is empty');
+    print.advice(`you can use ${chalk.yellowBright('timec task [name]')} set it`);
     return;
   }
 
   if (!name) {
     if (!thing.name) {
-      console.log('Events not in progress');
+      print.fail('Events not in progress');
       return;
     }
     const { stop } = cmdObj;
     if (stop) {
       // log上一个任务耗时
-      console.log('---finish thing---');
-      console.log(`* name:     ${thing.name}`);
-      console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
-      console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
-      console.log('------------------');
+      print(chalk.blueBright(`---${chalk.greenBright('finish thing')}---`));
+      print(`${chalk.blueBright('*')} ${chalk.yellowBright('name')}:     ${thing.name}`);
+      print(`${chalk.blueBright('*')} ${chalk.yellowBright('start')}:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+      print(`${chalk.blueBright('*')} ${chalk.yellowBright('duration')}: ${mmsToNormal(Date.now() - s)}`);
+      print(chalk.blueBright('------------------'));
       writeRecord(recordFilepath, task, thing.name, thing.startTime);
       thing.name = '';
       thing.startTime = '';
       updateConfig(config);
       return;
     }
-    console.log('------------------');
-    console.log(`* name:     ${thing.name}`);
-    console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
-    console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
-    console.log('------------------');
+    print(chalk.blueBright('------------------'));
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('name')}:     ${thing.name}`);
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('start')}:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('duration')}: ${mmsToNormal(Date.now() - s)}`);
+    print(chalk.blueBright('------------------'));
     return;
   }
 
   if (thing.name) {
     // log上一个任务耗时
-    console.log('---finish thing---');
-    console.log(`* name:     ${thing.name}`);
-    console.log(`* start:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
-    console.log(`* duration: ${mmsToNormal(Date.now() - s)}`);
-    console.log('------------------');
+    print(chalk.blueBright(`---${chalk.greenBright('finish thing')}---`));
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('name')}:     ${thing.name}`);
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('start')}:    ${new Date(thing.startTime).format('yyyy-MM-dd hh:mm:ss')}`);
+    print(`${chalk.blueBright('*')} ${chalk.yellowBright('duration')}: ${mmsToNormal(Date.now() - s)}`);
+    print(chalk.blueBright('------------------'));
     // 记录到文件中
     writeRecord(recordFilepath, task, thing.name, thing.startTime);
   }
@@ -62,10 +65,9 @@ module.exports = function (name, cmdObj) {
   thing.name = name;
   thing.startTime = new Date().getTime();
 
-  console.log('-----new thing----');
-  console.log(`* name:     ${thing.name}`);
-  console.log(`* start:    ${new Date().format('yyyy-MM-dd hh:mm:ss')}`);
-  console.log('------------------');
-
+  print(chalk.blueBright(`-----${chalk.cyanBright('new thing')}----`));
+  print(`${chalk.blueBright('*')} ${chalk.yellowBright('name')}:     ${thing.name}`);
+  print(`${chalk.blueBright('*')} ${chalk.yellowBright('start')}:    ${new Date().format('yyyy-MM-dd hh:mm:ss')}`);
+  print(chalk.blueBright('------------------'));
   updateConfig(config);
 };

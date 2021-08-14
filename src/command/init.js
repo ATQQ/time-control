@@ -1,11 +1,12 @@
+const chalk = require('chalk');
 const { initProject } = require('../template');
-const { getCWD } = require('../utils');
+const { getCWD, print } = require('../utils');
 
 const cwd = getCWD();
 module.exports = function (projectName) {
   if (initProject(cwd, projectName)) {
-    console.log(`初始化 ${projectName} 成功`);
+    print.success(chalk.bold('初始化项目'), chalk.yellow(projectName));
     return;
   }
-  console.log(`${projectName} 已存在`);
+  print.fail(chalk.bold('项目'), chalk.yellow(projectName), chalk.red('已存在'));
 };

@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
 
 const { floor } = Math;
 
@@ -91,7 +92,6 @@ function createDir(filepath) {
     fs.mkdirSync(filepath, { recursive: true });
     return true;
   }
-  console.error(`${filepath} 已存在`);
   return false;
 }
 
@@ -107,7 +107,7 @@ function createFile(filepath, content, judgeRepeat = true) {
     return true;
   }
   if (judgeRepeat) {
-    console.error(`${filepath} 已存在`);
+    print(chalk.red('文件已存在'), chalk.bold(filepath));
     return false;
   }
   fs.writeFileSync(getNoRepeatFilePath(filepath), content, { encoding: 'utf-8' });
@@ -197,6 +197,23 @@ function updateConfig(cfg) {
 function getOutFilename() {
   return 'timec-res';
 }
+const { log } = console;
+
+function print(...str) {
+  log(...str);
+}
+
+Object.assign(print, {
+  success(...str) {
+    log(chalk.green('success:'), ...str);
+  },
+  fail(...str) {
+    log(chalk.red('fail:'), ...str);
+  },
+  advice(...str) {
+    log(chalk.blue('advice'), ...str);
+  },
+});
 
 module.exports = {
   getJSON,
@@ -212,4 +229,5 @@ module.exports = {
   getOutFilename,
   updateConfig,
   configPath,
+  print,
 };

@@ -1,6 +1,7 @@
+const chalk = require('chalk');
 const { existsSync } = require('fs');
 const {
-  getConfig, getCWD, updateConfig, getFilePath, createFile,
+  getConfig, getCWD, updateConfig, getFilePath, createFile, print,
 } = require('../utils');
 
 const cwd = getCWD();
@@ -8,7 +9,11 @@ const cwd = getCWD();
 module.exports = function (newFilepath) {
   const { recordFilepath } = getConfig();
   if (!newFilepath) {
-    console.log(recordFilepath ? `recordFilepath: ${recordFilepath}` : 'not set recordFilepath');
+    if (recordFilepath) {
+      print(`recordFilepath: ${chalk.yellowBright(recordFilepath)}`);
+    } else {
+      print.fail('not set recordFilepath');
+    }
     return;
   }
   const fullPath = getFilePath(cwd, newFilepath);
@@ -16,7 +21,7 @@ module.exports = function (newFilepath) {
     // 自动创建空文件
     createFile(fullPath, '', false);
   }
-  console.log('set recordFilePath success：', fullPath);
+  print.success('set recordFilePath', chalk.yellowBright(fullPath));
   updateConfig({
     recordFilepath: fullPath,
   });
