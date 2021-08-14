@@ -11,9 +11,10 @@ commander.version(json.version);
 
 // 导出
 commander.command('output [filenames...]')
-  .option('-j, --json', 'Export result as json description file')
-  .option('-m, --markdown', 'Export the result as a markdown file')
-  .option('-t, --time', 'Export the result with time')
+  .alias('o')
+  .option('-j, --json', 'Exporting results to JSON')
+  .option('-m, --markdown', 'Exporting results to Markdown')
+  .option('-t, --time', 'Does the result include time')
   .action(outputCommand);
 
 /**
@@ -21,41 +22,45 @@ commander.command('output [filenames...]')
  */
 commander.command('init <projectName>')
   .alias('i')
-  .description('init project')
+  .description('Init a project')
   .action(initCommand);
 
 /**
  * 创建一个时间记录模板文件
  */
-commander.command('create <filename>', {})
+commander.command('create <filename>')
   .alias('c')
-  .description('create template note file')
+  .description('Create a template record file')
   .action(createCommand);
 
 /**
  * 创建任务、切换任务、查看任务列表
  */
 commander.command('task [name]')
-  .option('-d, --del', 'Delete task or thing')
-  .description('check tasks/add task/checkout task')
+  .alias('t')
+  .option('-d, --del', 'Delete task')
+  .description('Task Management')
   .action(taskCommand);
 
 /**
  * 更改默认记录文件的位置
  */
 commander.command('upPath [recordFilepath]')
-  .description('update config recordFilepath')
+  .alias('u')
+  .description('Update recordFilepath configuration')
   .action(upPathCommand);
 
 /**
  * 开始/结束具体的事务
  */
 commander.command('thing [name]')
-  .option('-s, --stop', 'stop a thing ')
-  .description('manage things')
+  .alias('tt')
+  .option('-s, --stop', 'stop thing ')
+  .description('Things Management')
   .action(thingCommand);
 
 commander.command('report [filenames...]')
+  .alias('r')
   .description('Automatic generation of time management reports')
   .option('-D, --day [date]', 'One day')
   .option('-M, --month [month]', 'One month')
