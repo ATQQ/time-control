@@ -1,1 +1,11 @@
-{"recordFilepath":"/Users/sugar/Documents/fe-project/time-control/test.md","tasks":["测试"],"defaultTaskIdx":0,"thing":{"name":"abc","startTime":"2021-08-08 22:18:19"}}
+{
+  "recordFilepath": "~/timec/auto.md",
+  "tasks": [
+    "测试"
+  ],
+  "defaultTaskIdx": -1,
+  "thing": {
+    "name": "",
+    "startTime": ""
+  }
+}

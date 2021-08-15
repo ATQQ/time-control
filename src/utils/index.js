@@ -191,7 +191,7 @@ function getConfig() {
 
 function updateConfig(cfg) {
   cfg = Object.assign(getConfig(), cfg);
-  return fs.writeFileSync(configPath, JSON.stringify(cfg));
+  return fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2));
 }
 
 function getOutFilename() {
