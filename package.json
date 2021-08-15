@@ -25,7 +25,9 @@
   "homepage": "https://github.com/ATQQ/time-control#readme",
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^6.2.1"
+    "commander": "^6.2.1",
+    "cross-spawn": "^7.0.3",
+    "vite": "^2.4.4"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

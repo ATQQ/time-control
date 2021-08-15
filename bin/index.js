@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 const commander = require('commander');
+const spawn = require('cross-spawn');
+const path = require('path');
 const json = require('../package.json');
 const {
   outputCommand, initCommand, createCommand,
   upPathCommand, taskCommand, thingCommand,
   reportCommand,
 } = require('../src/command');
+
 // 设置版号
 commander.version(json.version);
 
@@ -67,5 +70,18 @@ commander.command('report [filenames...]')
   .option('-Y, --year [year]', 'One year')
   .option('-R, --range [startDate_endDate]', 'A time period')
   .action(reportCommand);
+
+commander.command('page')
+  .description('Use Page show report')
+  .action(() => {
+    const cwd = path.resolve(__dirname, '../');
+    const serveService = spawn('node_modules/.bin/vite', ['src/page', '--host'], {
+      cwd,
+      stdio: 'inherit',
+    });
+    serveService.on('close', (code) => {
+      process.exit(code);
+    });
+  });
 
 commander.parse(process.argv);
