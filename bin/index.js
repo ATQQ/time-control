@@ -75,11 +75,17 @@ commander.command('page')
   .description('Use Page show report')
   .action(() => {
     const cwd = path.resolve(__dirname, '../');
-    const serveService = spawn('node_modules/.bin/vite', ['src/page', '--host'], {
+    const viteConfigPath = path.join(cwd, 'src/page/vite.config.js');
+    const serveService = spawn('node_modules/.bin/vite', ['src/page', '--host', '--config', viteConfigPath], {
+      cwd,
+      stdio: 'inherit',
+    });
+    const server = spawn('node', ['src/page/server.js'], {
       cwd,
       stdio: 'inherit',
     });
     serveService.on('close', (code) => {
+      server.kill('SIGSTOP');
       process.exit(code);
     });
   });

@@ -1,62 +1,40 @@
+const { Fw } = require('flash-wolves');
 const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const { createServer: createViteServer } = require('vite');
+const { getConfig, getJSON, getFileContent } = require('../utils');
 
-async function createServer() {
-  const app = express();
+const app = new Fw((req, res) => {
+  // 开启CORS
+  const { method } = req;
+  // 允许跨域
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  // 跨域允许的header类型
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  // 允许跨域携带cookie
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // 允许的方法
+  res.setHeader('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  // 设置响应头
+  res.setHeader('Content-Type', 'application/json;charset=utf-8');
+  // 对预检请求放行
+  if (method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+  }
+});
 
-  // Create vite server in middleware mode. This disables Vite's own HTML
-  // serving logic and let the parent server take control.
-  //
-  // If you want to use Vite's own HTML serving logic (using Vite as
-  // a development middleware), using 'html' instead.
-  const vite = await createViteServer({
-    server: { middlewareMode: 'ssr' },
-  });
-  // use vite's connect instance as middleware
-  app.use(vite.middlewares);
+app.get('/json', (req, res) => {
+  const config = getConfig();
+  const { recordFilepath } = config;
+  if (fs.existsSync(recordFilepath)) {
+    res.success(getJSON(getFileContent(recordFilepath)));
+    return;
+  }
+  res.fail(500, 'not set default recordFilepath');
+});
 
-  app.use('*', async (req, res) => {
-    // serve index.html - we will tackle this next
-    const url = req.originalUrl;
+app.get('/config', (req, res) => {
+  const config = getConfig();
+  res.success(config);
+});
 
-    try {
-    // 1. Read index.html
-      let template = fs.readFileSync(
-        path.resolve(__dirname, 'index.html'),
-        'utf-8',
-      );
-
-      // 2. Apply vite HTML transforms. This injects the vite HMR client, and
-      //    also applies HTML transforms from Vite plugins, e.g. global preambles
-      //    from @vitejs/plugin-react-refresh
-      template = await vite.transformIndexHtml(url, template);
-      // 3. Load the server entry. vite.ssrLoadModule automatically transforms
-      //    your ESM source code to be usable in Node.js! There is no bundling
-      //    required, and provides efficient invalidation similar to HMR.
-      //   const { render } = await vite.ssrLoadModule('/src/entry-server.js');
-
-      // 4. render the app HTML. This assumes entry-server.js's exported `render`
-      //    function calls appropriate framework SSR APIs,
-      //    e.g. ReactDOMServer.renderToString()
-      const appHtml = 'Vite SSR';
-
-      // 5. Inject the app-rendered HTML into the template.
-      const html = template.replace('<!--ssr-outlet-->', appHtml);
-
-      // 6. Send the rendered HTML back.
-      res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
-    } catch (e) {
-    // If an error is caught, let vite fix the stracktrace so it maps back to
-    // your actual source code.
-      vite.ssrFixStacktrace(e);
-      console.error(e);
-      res.status(500).end(e.message);
-    }
-  });
-
-  app.listen(3000);
-}
-
-createServer();
+app.listen(3001);
