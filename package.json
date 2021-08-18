@@ -24,10 +24,15 @@
   },
   "homepage": "https://github.com/ATQQ/time-control#readme",
   "dependencies": {
+    "@vitejs/plugin-vue": "^1.4.0",
+    "@vue/compiler-sfc": "^3.2.2",
     "chalk": "^4.1.2",
     "commander": "^6.2.1",
     "cross-spawn": "^7.0.3",
-    "vite": "^2.4.4"
+    "express": "^4.17.1",
+    "flash-wolves": "^0.0.4",
+    "vite": "^2.4.4",
+    "vue": "^3.2.2"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
