@@ -13,7 +13,7 @@ module.exports = function (filenames, cmdObj) {
   const { recordFilepath } = config;
   if (filenames.length === 0 && !existsSync(recordFilepath)) {
     print.fail(chalk.bold(recordFilepath), 'not exist');
-    print.advice('use', chalk.yellowBright('timec upPath <recordFilepath>'), 'set it');
+    print.advice('use', chalk.yellowBright('timec path <recordFilepath>'), 'set it');
     return;
   }
 

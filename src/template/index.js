@@ -1,6 +1,9 @@
+const { existsSync } = require('fs');
 const path = require('path');
 
-const { createFile, createDir, getFileContent } = require('../utils');
+const {
+  createFile, createDir, getFileContent, getConfig, updateConfig,
+} = require('../utils');
 
 // 静态资源目录
 const assetsDir = path.resolve(__dirname, 'assets');
@@ -18,6 +21,13 @@ function initProject(cwd, projectName) {
   // 创建目录
   if (createDir(dir)) {
     createFile(path.resolve(dir, 'README.md'), readmeContent);
+    const { recordFilepath } = getConfig();
+    if (!existsSync(recordFilepath)) {
+      createFile(path.resolve(dir, 'auto.md'), '');
+      updateConfig({
+        recordFilepath: path.resolve(dir, 'auto.md'),
+      });
+    }
 
     createDir(path.resolve(dir, 'work'));
     createDir(path.resolve(dir, 'study'));

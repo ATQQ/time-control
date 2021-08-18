@@ -9,10 +9,10 @@ const cwd = getCWD();
 module.exports = function (newFilepath) {
   const { recordFilepath } = getConfig();
   if (!newFilepath) {
-    if (recordFilepath) {
+    if (existsSync(recordFilepath)) {
       print(`recordFilepath: ${chalk.yellowBright(recordFilepath)}`);
     } else {
-      print.fail('not set recordFilepath');
+      print.fail('not set valid recordFilepath');
     }
     return;
   }

@@ -5,7 +5,7 @@ const path = require('path');
 const json = require('../package.json');
 const {
   outputCommand, initCommand, createCommand,
-  upPathCommand, taskCommand, thingCommand,
+  pathCommand, taskCommand, thingCommand,
   reportCommand,
 } = require('../src/command');
 
@@ -48,10 +48,10 @@ commander.command('task [name]')
 /**
  * 更改默认记录文件的位置
  */
-commander.command('upPath [recordFilepath]')
+commander.command('path [recordFilepath]')
   .alias('u')
   .description('Update recordFilepath configuration')
-  .action(upPathCommand);
+  .action(pathCommand);
 
 /**
  * 开始/结束具体的事务

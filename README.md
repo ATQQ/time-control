@@ -6,6 +6,21 @@
 ## 构思
 通过简单的交互指令，分析特定的格式md或md集合，生成报告（周报，月报，年报，自定义周期报告）
 
+## 使用
+```sh
+npm install -g time-control
+```
+
+## 查看帮助
+```sh
+timec --help
+
+# or
+timec [command] --help
+```
+
+![图片](https://img.cdn.sugarat.top/mdImg/MTYyOTMwMTE0NjQwOA==629301146408)
+
 ## 规划
 * [x] 指令+参数交互生成简单的md报告
 * [ ] 接入一些工程工具
