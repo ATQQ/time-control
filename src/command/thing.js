@@ -15,7 +15,7 @@ module.exports = function (name, cmdObj) {
 
   if (!existsSync(recordFilepath)) {
     print.fail(chalk.bold(recordFilepath), 'not exist');
-    print.advice('use', chalk.yellowBright('timec upPath <recordFilepath>'), 'set it');
+    print.advice('use', chalk.yellowBright('timec path <recordFilepath>'), 'set it');
     return;
   }
   if (!task) {
