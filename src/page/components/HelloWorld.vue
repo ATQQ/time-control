@@ -9,18 +9,19 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import {getConfig,getEveryDayData} from './../api'
-defineProps({
-  msg: String
-})
+import { defineProps } from 'vue';
+import { getConfig, getEveryDayData } from '../api';
 
-const printConfig = ()=>{
-  getConfig().then(console.log)
-}
-const printEveryData = ()=>{
-  getEveryDayData().then(console.log)
-}
+defineProps({
+  msg: String,
+});
+
+const printConfig = () => {
+  getConfig().then(console.log);
+};
+const printEveryData = () => {
+  getEveryDayData().then(console.log);
+};
 </script>
 
 <style scoped>

@@ -29,6 +29,7 @@
     "chalk": "^4.1.2",
     "commander": "^6.2.1",
     "cross-spawn": "^7.0.3",
+    "element-plus": "^1.0.2-beta.71",
     "express": "^4.17.1",
     "flash-wolves": "^0.0.4",
     "vite": "^2.4.4",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.0"
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-vue": "^7.16.0"
   }
 }
