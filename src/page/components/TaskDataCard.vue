@@ -40,7 +40,8 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { getEveryDayData } from '../api';
 
 const value = ref(new Date());
 const parseDay = (date) => {
@@ -49,29 +50,73 @@ const parseDay = (date) => {
 };
 
 const sumData = reactive({
-  '2021-08-18': {
-    time: '5.55h',
-    tasks: [
-      {
-        title: '洋葱',
-        time: '5.55h',
-        things: [
-          {
-            title: '写文档',
-            time: '5.55h',
-          },
-        ],
-      },
-      {
-        title: '洋葱',
-        time: '5.55h',
-        things: [
-
-        ],
-      },
-    ],
-  },
+  // '2021-08-18': {
+  //   time: '5.55h',
+  //   tasks: [
+  //     {
+  //       title: '测试',
+  //       time: '5.55h',
+  //       things: [
+  //         {
+  //           title: '写文档',
+  //           time: '5.55h',
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 });
+
+const parseOneDay = (data)=>{
+  const o = {
+    time:'',
+    tasks:[]
+  }
+  if(!data||!data.title){
+    return {}
+  }
+  let sumTime = 0
+  data.tasks.forEach(t=>{
+    let task = {
+      title:t.title,
+      time:'',
+      things:[]
+    }
+
+    let taskTime = 0
+    t.things.forEach(thing=>{
+      const {time,content} = thing
+      taskTime+=(+time)
+      task.things.push({
+        title:content,
+        time:`${time}h`
+      })
+    })
+    task.time = `${taskTime}h`
+    sumTime+=taskTime
+
+    o.tasks.push(task)
+  })
+  o.time = `${sumTime}h`
+  return {
+    [data.title]:o
+  }
+}
+
+const refresData = async ()=>{
+  const {data} = await getEveryDayData()
+  data.forEach(v=>{
+    Object.assign(sumData,{
+      ...parseOneDay(v)
+    })
+  })
+}
+
+onMounted(()=>{
+  setInterval(()=>{
+    refresData()
+  },1200)
+})
 </script>
 
 <style scoped>
@@ -89,7 +134,7 @@ const sumData = reactive({
   list-style: none;
   padding-left: 4px;
   max-height: 60px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 .tasks li {
   background-color: #ecd9f4;
