@@ -5,6 +5,7 @@ const pathCommand = require('./path');
 const taskCommand = require('./task');
 const thingCommand = require('./thing');
 const reportCommand = require('./report');
+const pageCommand = require('./page');
 
 module.exports = {
   outputCommand,
@@ -14,4 +15,5 @@ module.exports = {
   taskCommand,
   thingCommand,
   reportCommand,
+  pageCommand,
 };

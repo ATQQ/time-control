@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 const commander = require('commander');
-const spawn = require('cross-spawn');
-const path = require('path');
 const json = require('../package.json');
 const {
   outputCommand, initCommand, createCommand,
   pathCommand, taskCommand, thingCommand,
   reportCommand,
+  pageCommand,
 } = require('../src/command');
 
 // 设置版号
@@ -73,21 +72,6 @@ commander.command('report [filenames...]')
 
 commander.command('page')
   .description('Use Page show report')
-  .action(() => {
-    const cwd = path.resolve(__dirname, '../');
-    const viteConfigPath = path.join(cwd, 'src/page/vite.config.js');
-    const serveService = spawn('node_modules/.bin/vite', ['src/page', '--host', '--config', viteConfigPath], {
-      cwd,
-      stdio: 'inherit',
-    });
-    const server = spawn('node', ['src/page/server.js'], {
-      cwd,
-      stdio: 'inherit',
-    });
-    serveService.on('close', (code) => {
-      server.kill('SIGSTOP');
-      process.exit(code);
-    });
-  });
+  .action(pageCommand);
 
 commander.parse(process.argv);

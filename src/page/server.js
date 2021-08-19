@@ -25,6 +25,7 @@ const app = new Fw((req, res) => {
 app.get('/json', (req, res) => {
   const config = getConfig();
   const { recordFilepath } = config;
+  // TODO: 配置文件路劲没有直接更新
   if (fs.existsSync(recordFilepath)) {
     res.success(getJSON(getFileContent(recordFilepath)));
     return;
