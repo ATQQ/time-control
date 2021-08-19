@@ -67,56 +67,56 @@ const sumData = reactive({
   // },
 });
 
-const parseOneDay = (data)=>{
+const parseOneDay = (data) => {
   const o = {
-    time:'',
-    tasks:[]
+    time: '',
+    tasks: [],
+  };
+  if (!data || !data.title) {
+    return {};
   }
-  if(!data||!data.title){
-    return {}
-  }
-  let sumTime = 0
-  data.tasks.forEach(t=>{
-    let task = {
-      title:t.title,
-      time:'',
-      things:[]
-    }
+  let sumTime = 0;
+  data.tasks.forEach((t) => {
+    const task = {
+      title: t.title,
+      time: '',
+      things: [],
+    };
 
-    let taskTime = 0
-    t.things.forEach(thing=>{
-      const {time,content} = thing
-      taskTime+=(+time)
+    let taskTime = 0;
+    t.things.forEach((thing) => {
+      const { time, content } = thing;
+      taskTime += (+time);
       task.things.push({
-        title:content,
-        time:`${time}h`
-      })
-    })
-    task.time = `${taskTime}h`
-    sumTime+=taskTime
+        title: content,
+        time: `${time}h`,
+      });
+    });
+    task.time = `${taskTime}h`;
+    sumTime += taskTime;
 
-    o.tasks.push(task)
-  })
-  o.time = `${sumTime}h`
+    o.tasks.push(task);
+  });
+  o.time = `${sumTime}h`;
   return {
-    [data.title]:o
-  }
-}
+    [data.title]: o,
+  };
+};
 
-const refresData = async ()=>{
-  const {data} = await getEveryDayData()
-  data.forEach(v=>{
-    Object.assign(sumData,{
-      ...parseOneDay(v)
-    })
-  })
-}
+const refresData = async () => {
+  const { data } = await getEveryDayData();
+  data.forEach((v) => {
+    Object.assign(sumData, {
+      ...parseOneDay(v),
+    });
+  });
+};
 
-onMounted(()=>{
-  setInterval(()=>{
-    refresData()
-  },1200)
-})
+onMounted(() => {
+  setInterval(() => {
+    refresData();
+  }, 1200);
+});
 </script>
 
 <style scoped>
