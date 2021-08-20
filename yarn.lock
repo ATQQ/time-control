@@ -371,6 +371,11 @@ colorette@^1.2.2:
   resolved "https://registry.nlark.com/colorette/download/colorette-1.3.0.tgz?cache=0&sync_timestamp=1628600323078&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcolorette%2Fdownload%2Fcolorette-1.3.0.tgz#ff45d2f0edb244069d3b772adeb04fed38d0a0af"
   integrity sha1-/0XS8O2yRAadO3cq3rBP7TjQoK8=
 
+"colors@>= 0.3.0":
+  version "1.4.0"
+  resolved "https://registry.nlark.com/colors/download/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
+  integrity sha1-xQSRR51MG9rtLJztMs98fcI2D3g=
+
 commander@^6.2.1:
   version "6.2.1"
   resolved "https://registry.nlark.com/commander/download/commander-6.2.1.tgz?cache=0&sync_timestamp=1627358314526&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcommander%2Fdownload%2Fcommander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
@@ -1573,6 +1578,13 @@ pkg-up@^2.0.0:
   integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
   dependencies:
     find-up "^2.1.0"
+
+play@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.nlark.com/play/download/play-0.5.0.tgz#f814e67163de29de7b9d9e905df8389ae4ea6347"
+  integrity sha1-+BTmcWPeKd57nZ6QXfg4muTqY0c=
+  dependencies:
+    colors ">= 0.3.0"
 
 postcss-modules-extract-imports@^3.0.0:
   version "3.0.0"
