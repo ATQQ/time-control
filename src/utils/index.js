@@ -186,6 +186,7 @@ function getCWD() {
 
 const configPath = path.join(__dirname, '../../.config/record.json');
 function getConfig() {
+  delete require.cache[configPath];
   return require(configPath);
 }
 
