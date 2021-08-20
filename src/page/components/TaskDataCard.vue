@@ -89,15 +89,15 @@ const parseOneDay = (data) => {
       taskTime += (+time);
       task.things.push({
         title: content,
-        time: `${time}h`,
+        time: `${(+time).toFixed(4)}h`,
       });
     });
-    task.time = `${taskTime}h`;
+    task.time = `${taskTime.toFixed(4)}h`;
     sumTime += taskTime;
 
     o.tasks.push(task);
   });
-  o.time = `${sumTime}h`;
+  o.time = `${sumTime.toFixed(4)}h`;
   return {
     [data.title]: o,
   };
