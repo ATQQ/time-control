@@ -6,6 +6,7 @@ const taskCommand = require('./task');
 const thingCommand = require('./thing');
 const reportCommand = require('./report');
 const pageCommand = require('./page');
+const remindCommand = require('./remind');
 
 module.exports = {
   outputCommand,
@@ -16,4 +17,5 @@ module.exports = {
   thingCommand,
   reportCommand,
   pageCommand,
+  remindCommand,
 };

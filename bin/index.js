@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 const commander = require('commander');
-const play = require('play/lib/play');
-const spawn = require('cross-spawn');
 const json = require('../package.json');
 const {
   outputCommand, initCommand, createCommand,
   pathCommand, taskCommand, thingCommand,
   reportCommand,
   pageCommand,
+  remindCommand,
 } = require('../src/command');
-const { getFilePath, getCWD, getConfig } = require('../src/utils');
 
 // 设置版号
 commander.version(json.version);
@@ -80,25 +78,5 @@ commander.command('page')
 commander.command('remind')
   .description('Open auto remind music')
   .option('-c,--cycle [time]', 'Set the duration of the reminder cycle（minute）', '40')
-  .action((cmdObj) => {
-    // 提醒周期（minute）
-    const time = +cmdObj.cycle;
-    const oneMinute = 1000 * 60;
-    const loop = () => {
-      setTimeout(() => {
-        play.sound(getFilePath(__dirname, './../node_modules/play/wavs/drums/kick.wav'));
-        play.sound(getFilePath(__dirname, './../node_modules/play/wavs/drums/snare.wav'));
-        play.sound(getFilePath(__dirname, './../node_modules/play/wavs/drums/tick.wav'));
-        loop();
-        // 自动记录一下
-        const cwd = getCWD();
-        const { thing } = getConfig();
-        spawn('timec', ['thing', thing.name], {
-          cwd,
-          stdio: 'inherit',
-        });
-      }, time * oneMinute);
-    };
-    loop();
-  });
+  .action(remindCommand);
 commander.parse(process.argv);
