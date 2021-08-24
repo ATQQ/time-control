@@ -3,9 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-// const play = require('play/lib/play');
-const audioPlay = require('audio-play');
-const audioLoad = require('audio-loader');
+const player = require('play-sound')(opts = {})
 
 const { floor } = Math;
 
@@ -220,17 +218,14 @@ Object.assign(print, {
 });
 
 function playRemindAudio(cb) {
-  // play.sound(getFilePath(__dirname, './../../node_modules/play/wavs/drums/kick.wav'));
-  // play.sound(getFilePath(__dirname, './../../node_modules/play/wavs/drums/snare.wav'));
-  // play.sound(getFilePath(__dirname, './../../node_modules/play/wavs/drums/tick.wav'));
-  audioLoad(getFilePath(__dirname, './../assets/success.wav')).then((v) => {
-    audioPlay(v);
+  player.play(getFilePath(__dirname, './../assets/success.wav'),function(err){
+    if (err) throw err
     setTimeout(() => {
       if (typeof cb === 'function') {
         cb();
       }
-    }, v.duration * 1000);
-  });
+    }, 3000);
+  })
 }
 module.exports = {
   getJSON,
