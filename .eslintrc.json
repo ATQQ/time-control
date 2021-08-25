@@ -17,6 +17,7 @@
         "no-use-before-define":"off",
         "no-param-reassign":"off",
         "func-names":"off",
-        "no-shadow":"off"
+        "no-shadow":"off",
+        "no-case-declarations":"off"
     }
 }

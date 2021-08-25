@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const { existsSync } = require('fs');
 const player = require('play-sound')();
 
 const { floor } = Math;
@@ -185,14 +186,30 @@ function getCWD() {
   return process.cwd();
 }
 
-const configPath = path.join(__dirname, '../../.config/record.json');
-function getConfig() {
+const configPath = getFilePath(__dirname, '../../.config/record.json');
+function getConfig(origin = false) {
   delete require.cache[configPath];
-  return require(configPath);
+  const config = require(configPath);
+  if (!origin) {
+    const { configPath } = config;
+    if (existsSync(configPath)) {
+      delete require.cache[configPath];
+      // 返回用户定义的配置文件路劲
+      return require(configPath);
+    }
+  }
+  return config;
 }
 
-function updateConfig(cfg) {
+function updateConfig(cfg, origin = false) {
   cfg = Object.assign(getConfig(), cfg);
+  if (origin) {
+    return fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2));
+  }
+  const { configPath: userConfigPath } = getConfig(true);
+  if (existsSync(userConfigPath)) {
+    return fs.writeFileSync(userConfigPath, JSON.stringify(cfg, null, 2));
+  }
   return fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2));
 }
 

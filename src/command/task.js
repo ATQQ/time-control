@@ -10,7 +10,7 @@ module.exports = function (name, cmdObj) {
   if (!name) {
     if (tasks.length === 0) {
       print.fail('no tasks, you can use command add task');
-      print.advice('timec task [name]');
+      print.advice('tc task [name]');
       return;
     }
     tasks.forEach((v, i) => {

@@ -48,9 +48,8 @@ commander.command('task [name]')
 /**
  * 更改默认记录文件的位置
  */
-commander.command('path [recordFilepath]')
-  .alias('u')
-  .description('Update recordFilepath configuration')
+commander.command('path <type> [recordFilepath]')
+  .description('Update record config type in [dir,file,config]')
   .action(pathCommand);
 
 /**
