@@ -14,14 +14,19 @@ module.exports = function taskCommand(name, cmdObj) {
       print.advice('tc task [name]');
       return;
     }
-    const choices = [];
+    let choices = [];
     tasks.forEach((v, i) => {
       if (i === +defaultTaskIdx) {
         choices.unshift(v);
+        print('当前任务:', chalk.yellowBright(tasks[config.defaultTaskIdx]));
       } else {
         choices.push(v);
       }
     });
+    choices = choices.map((v, i) => ({
+      name: `${i + 1}: ${v}`,
+      value: v,
+    }));
     inquirer
       .prompt([
         {

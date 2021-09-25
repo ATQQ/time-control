@@ -194,7 +194,7 @@ function mmsToNormal(mms) {
     str += `${minute}分 `;
   }
   time -= minute * 60;
-  str += `${time}秒`;
+  str += `${time}秒 ${time}ms`;
   return str;
 }
 
