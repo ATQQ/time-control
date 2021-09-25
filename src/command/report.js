@@ -8,7 +8,7 @@ const {
 
 const cwd = getCWD();
 const outFilename = getOutFilename();
-module.exports = function (filenames, cmdObj) {
+module.exports = function reportCommand(filenames, cmdObj) {
   const config = getConfig();
   const { recordFilepath } = config;
 

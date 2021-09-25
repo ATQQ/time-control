@@ -88,9 +88,9 @@ const parseOneDay = (data) => {
     t.things.forEach((thing) => {
       const { time, content } = thing;
       taskTime += (+time);
-      const tempThing = task.things.find(v => v.title === content)
+      const tempThing = task.things.find((v) => v.title === content);
       if (tempThing) {
-        tempThing.time = fixedNum(+tempThing.time + +time)
+        tempThing.time = fixedNum(+tempThing.time + +time);
       } else {
         // 不存在直接加入
         task.things.push({

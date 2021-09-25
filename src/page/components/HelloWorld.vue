@@ -1,11 +1,9 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <button type="button" @click="printConfig">
-    get config
-  </button>
-  <button type="button" @click="printEveryData">
-    get all data
-  </button>
+  <div>
+    <h1>{{ msg }}</h1>
+    <button type="button" @click="printConfig">get config</button>
+    <button type="button" @click="printEveryData">get all data</button>
+  </div>
 </template>
 
 <script setup>

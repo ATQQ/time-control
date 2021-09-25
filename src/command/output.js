@@ -8,7 +8,7 @@ const {
 const cwd = getCWD();
 const outFilename = getOutFilename();
 
-module.exports = function (filenames, cmdObj) {
+module.exports = function outPutCommand(filenames, cmdObj) {
   const config = getConfig();
   const { recordFilepath } = config;
   if (filenames.length === 0 && !existsSync(recordFilepath)) {
@@ -18,11 +18,11 @@ module.exports = function (filenames, cmdObj) {
   }
 
   // 获取所有文件的内容
-  filenames = filenames.map((filename) => getFilePath(cwd, filename));
-  if (filenames.length === 0) {
-    filenames = [recordFilepath];
+  let files = filenames.map((filename) => getFilePath(cwd, filename));
+  if (files.length === 0) {
+    files = [recordFilepath];
   }
-  const content = getFilesContent(filenames);
+  const content = getFilesContent(files);
   const { json, markdown, time } = cmdObj;
 
   if (json) {

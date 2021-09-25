@@ -1,7 +1,7 @@
 const spawn = require('cross-spawn');
 const path = require('path');
 
-module.exports = function () {
+module.exports = function pageCommand() {
   const cwd = path.resolve(__dirname, '../../');
   const viteConfigPath = path.join(cwd, 'src/page/vite.config.js');
   const serveService = spawn('node_modules/.bin/vite', ['src/page', '--config', viteConfigPath], {

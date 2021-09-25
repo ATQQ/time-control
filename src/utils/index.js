@@ -8,6 +8,45 @@ const player = require('play-sound')();
 
 const { floor } = Math;
 
+const { log } = console;
+
+function print(...str) {
+  log(...str);
+}
+
+Object.assign(print, {
+  success(...str) {
+    log(chalk.green('success:'), ...str);
+  },
+  fail(...str) {
+    log(chalk.red('fail:'), ...str);
+  },
+  advice(...str) {
+    log(chalk.blue('advice'), ...str);
+  },
+});
+
+function getFilePath(...p) {
+  return path.join(...p);
+}
+
+/**
+ * 获取与原文件不重复的一个文件路经
+ * @param {string} originPath
+ */
+function getNoRepeatFilePath(originPath) {
+  let num = 1;
+  const { dir, name, ext } = path.parse(originPath);
+  if (!fs.existsSync(originPath)) {
+    return originPath;
+  }
+  // todo：待优化
+  while (fs.existsSync(getFilePath(dir, `${name}-${num}${ext}`))) {
+    num += 1;
+  }
+  return getFilePath(dir, `${name}-${num}${ext}`);
+}
+
 /**
  * 获取md文件的JSON描述
  * @param {string} fileContent
@@ -16,6 +55,7 @@ function getJSON(fileContent) {
   const lines = fileContent.split('\n');
   const resData = [];
   let item = null;
+  // eslint-disable-next-line no-restricted-syntax
   for (const line of lines) {
     // 判断是否新的一天
     if (line.startsWith('# ')) {
@@ -129,56 +169,32 @@ function getFileContent(filepath) {
  * @param {string[]} files
  */
 function getFilesContent(files) {
-  return files.reduce((pre, now) => {
-    pre += '\n';
-    pre += getFileContent(now);
-    return pre;
-  }, '');
-}
-
-function getFilePath(...p) {
-  return path.join(...p);
-}
-
-/**
- * 获取与原文件不重复的一个文件路经
- * @param {string} originPath
- */
-function getNoRepeatFilePath(originPath) {
-  let num = 1;
-  const { dir, name, ext } = path.parse(originPath);
-  if (!fs.existsSync(originPath)) {
-    return originPath;
-  }
-  // todo：待优化
-  while (fs.existsSync(getFilePath(dir, `${name}-${num}${ext}`))) {
-    num += 1;
-  }
-  return getFilePath(dir, `${name}-${num}${ext}`);
+  return files.reduce((pre, now) => `${pre}\n${getFileContent(now)}`, '');
 }
 
 /**
  * 毫秒转时分秒
  */
 function mmsToNormal(mms) {
+  let time = mms;
   let str = '';
-  mms = floor(mms / 1000);
-  const day = floor(mms / (24 * 60 * 60));
+  time = floor(time / 1000);
+  const day = floor(time / (24 * 60 * 60));
   if (day) {
     str += `${day}天 `;
   }
-  mms -= day * 24 * 60 * 60;
-  const hour = floor(mms / (60 * 60));
+  time -= day * 24 * 60 * 60;
+  const hour = floor(time / (60 * 60));
   if (hour) {
     str += `${hour}时 `;
   }
-  mms -= hour * 60 * 60;
-  const minute = floor(mms / 60);
+  time -= hour * 60 * 60;
+  const minute = floor(time / 60);
   if (minute) {
     str += `${minute}分 `;
   }
-  mms -= minute * 60;
-  str += `${mms}秒`;
+  time -= minute * 60;
+  str += `${time}秒`;
   return str;
 }
 
@@ -191,48 +207,31 @@ function getConfig(origin = false) {
   delete require.cache[configPath];
   const config = require(configPath);
   if (!origin) {
-    const { configPath } = config;
-    if (existsSync(configPath)) {
-      delete require.cache[configPath];
+    const { configPath: cfgPath } = config;
+    if (existsSync(cfgPath)) {
+      delete require.cache[cfgPath];
       // 返回用户定义的配置文件路劲
-      return require(configPath);
+      return require(cfgPath);
     }
   }
   return config;
 }
 
 function updateConfig(cfg, origin = false) {
-  cfg = Object.assign(getConfig(), cfg);
+  const config = Object.assign(getConfig(), cfg);
   if (origin) {
-    return fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2));
+    return fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
   }
   const { configPath: userConfigPath } = getConfig(true);
   if (existsSync(userConfigPath)) {
-    return fs.writeFileSync(userConfigPath, JSON.stringify(cfg, null, 2));
+    return fs.writeFileSync(userConfigPath, JSON.stringify(config, null, 2));
   }
-  return fs.writeFileSync(configPath, JSON.stringify(cfg, null, 2));
+  return fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
 function getOutFilename() {
   return 'timec-res';
 }
-const { log } = console;
-
-function print(...str) {
-  log(...str);
-}
-
-Object.assign(print, {
-  success(...str) {
-    log(chalk.green('success:'), ...str);
-  },
-  fail(...str) {
-    log(chalk.red('fail:'), ...str);
-  },
-  advice(...str) {
-    log(chalk.blue('advice'), ...str);
-  },
-});
 
 function playRemindAudio(cb) {
   player.play(getFilePath(__dirname, './../assets/success.wav'), (err) => {

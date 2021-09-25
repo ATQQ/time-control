@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const { getConfig, updateConfig, print } = require('../utils');
 
-module.exports = function (name, cmdObj) {
+module.exports = function taskCommand(name, cmdObj) {
   const config = getConfig();
   const { tasks, defaultTaskIdx } = config;
 

@@ -7,15 +7,17 @@ const {
 
 const cwd = getCWD();
 
-module.exports = function (type, filepath) {
+module.exports = function pathCommand(type, filepath) {
   const safeTypes = ['dir', 'file', 'config'];
   if (safeTypes.indexOf(type) === -1) {
     print.fail('not support type');
     print.advice('only support type in [dir,file,config]');
+    return;
   }
   const config = getConfig();
-  switch (type) {
-    case 'dir':
+
+  const options = {
+    dir() {
       if (!filepath) {
         spawn('tc', ['path', 'file'], {
           cwd,
@@ -47,9 +49,8 @@ module.exports = function (type, filepath) {
           stdio: 'inherit',
         });
       }, 100);
-
-      break;
-    case 'file':
+    },
+    file() {
       const { recordFilepath } = config;
       if (!filepath) {
         if (existsSync(recordFilepath)) {
@@ -68,8 +69,8 @@ module.exports = function (type, filepath) {
       updateConfig({
         recordFilepath: fullPath,
       });
-      break;
-    case 'config':
+    },
+    config() {
       if (!filepath) {
         const { configPath } = config;
         print(chalk.yellow('configFile'), chalk.blueBright(configPath || originConfigPath));
@@ -85,8 +86,8 @@ module.exports = function (type, filepath) {
         ...config,
         configPath,
       }, true);
-      break;
-    default:
-      break;
-  }
+    },
+  };
+  // eslint-disable-next-line no-unused-expressions
+  options[type] && options[type]();
 };

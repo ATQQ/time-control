@@ -5,7 +5,7 @@ const {
   getConfig, updateConfig, mmsToNormal, print,
 } = require('../utils');
 
-module.exports = function (name, cmdObj) {
+module.exports = function thingCommand(name, cmdObj) {
   const config = getConfig();
   const {
     thing, recordFilepath, tasks, defaultTaskIdx,

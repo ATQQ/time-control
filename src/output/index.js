@@ -2,7 +2,8 @@ const { writeFileSync } = require('fs');
 const { getJSON, getFileContent, mmsToNormal } = require('../utils');
 
 // eslint-disable-next-line no-extend-native
-Date.prototype.format = function (fmt) {
+Date.prototype.format = function dateFormat(fmt) {
+  let format = fmt || 'yyyy-mm-dd';
   const o = {
     'M+': this.getMonth() + 1, // 月份
     'd+': this.getDate(), // 日
@@ -12,30 +13,65 @@ Date.prototype.format = function (fmt) {
     'q+': Math.floor((this.getMonth() + 3) / 3), // 季度
     S: this.getMilliseconds(), // 毫秒
   };
-  if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (`${this.getFullYear()}`).substr(4 - RegExp.$1.length));
+  if (/(y+)/.test(format)) {
+    format = format.replace(RegExp.$1, (`${this.getFullYear()}`).substr(4 - RegExp.$1.length));
   }
-  for (const k in o) {
-    if (new RegExp(`(${k})`).test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : ((`00${o[k]}`).substr((`${o[k]}`).length)));
+  Object.keys(o).forEach((k) => {
+    if (new RegExp(`(${k})`).test(format)) {
+      format = format.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : ((`00${o[k]}`).substr((`${o[k]}`).length)));
     }
-  }
-  return fmt;
+  });
+  return format;
 };
+
+function fixedNum(num, length = 2) {
+  return (+num).toFixed(length);
+}
 
 function outputJson(content) {
   return JSON.stringify(getJSON(content), null, 2);
 }
 
+function getEverydayData(timeDesc, withTime = false) {
+  let res = [];
+  // 按天任务时间汇总
+  timeDesc.forEach((oneDay) => {
+    const oneRes = [];
+    const { title, tasks } = oneDay;
+    const sumDay = tasks.reduce((preTime, task) => {
+      const { title: taskName, things } = task;
+      const sum = things.reduce((pre, thing) => {
+        // 某件事情况
+        const { content, time } = thing;
+        oneRes.unshift(`* ${content} -- ${fixedNum(time)}`);
+        return pre + (+thing.time);
+      }, 0);
+
+      // 某一个任务
+      oneRes.unshift(`## ${taskName} -- ${fixedNum(sum)}`);
+      return preTime + sum;
+    }, 0);
+
+    // 一天的标题
+    oneRes.unshift(`# ${title} -- ${fixedNum(sumDay)}`);
+    res.push(...oneRes, '');
+  });
+  // 去掉统计的时间
+  if (!withTime) {
+    res = res.map((v) => v.replace(/\s--.*/, ''));
+  }
+  return res;
+}
+
 function outPutMarkdown(jsonSchema, withTime = false) {
   // 从小到大排
-  jsonSchema = jsonSchema.sort((a, b) => {
+  const schema = jsonSchema.sort((a, b) => {
     const d1 = new Date(a.title);
     const d2 = new Date(b.title);
     return d1 - d2;
   });
   const res = [];
-  res.push(...getEverydayData(jsonSchema, withTime));
+  res.push(...getEverydayData(schema, withTime));
   return res.join('\n');
 }
 
@@ -65,6 +101,7 @@ function outPutReport(jsonSchema) {
     return pre;
   }, []);
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const taskItem of tasks) {
     res.push('');
     res.push(`## ${taskItem.title}`);
@@ -82,41 +119,6 @@ function outPutReport(jsonSchema) {
   return res.join('\n');
 }
 
-function fixedNum(num, length = 2) {
-  return (+num).toFixed(length);
-}
-
-function getEverydayData(timeDesc, withTime = false) {
-  let res = [];
-  // 按天任务时间汇总
-  timeDesc.forEach((oneDay) => {
-    const oneRes = [];
-    const { title, tasks } = oneDay;
-    const sum = tasks.reduce((pre, task) => {
-      const { title, things } = task;
-      const sum = things.reduce((pre, thing) => {
-        // 某件事情况
-        const { content, time } = thing;
-        oneRes.unshift(`* ${content} -- ${fixedNum(time)}`);
-        return pre + (+thing.time);
-      }, 0);
-
-      // 某一个任务
-      oneRes.unshift(`## ${title} -- ${fixedNum(sum)}`);
-      return pre + sum;
-    }, 0);
-
-    // 一天的标题
-    oneRes.unshift(`# ${title} -- ${fixedNum(sum)}`);
-    res.push(...oneRes, '');
-  });
-  // 去掉统计的时间
-  if (!withTime) {
-    res = res.map((v) => v.replace(/\s--.*/, ''));
-  }
-  return res;
-}
-
 function writeRecord(filePath, task, thing, startTime) {
   const json = getJSON(getFileContent(filePath));
   const date = new Date(startTime);
@@ -124,13 +126,14 @@ function writeRecord(filePath, task, thing, startTime) {
   const hours = ((Date.now() - date.getTime()) / 3600000).toFixed(5);
 
   // 特殊处理元数据content带上time
-  const things = json.reduce((pre, v) => {
-    const { tasks } = v;
-    const things = tasks.map((v) => v.things).flat(2);
-    return pre.concat(things);
+  const things = json.reduce((pre, { tasks }) => {
+    const temp = tasks.map((v) => v.things).flat(2);
+    return pre.concat(temp);
   }, []);
+
   things.forEach((t) => {
     const { content, time } = t;
+    // eslint-disable-next-line no-param-reassign
     t.content = `${content} ${time}`;
   });
 
