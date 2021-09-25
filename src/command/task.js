@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const inquirer = require('inquirer');
 const { getConfig, updateConfig, print } = require('../utils');
 
 module.exports = function taskCommand(name, cmdObj) {
@@ -13,15 +14,31 @@ module.exports = function taskCommand(name, cmdObj) {
       print.advice('tc task [name]');
       return;
     }
+    const choices = [];
     tasks.forEach((v, i) => {
-      let mark = '  ';
       if (i === +defaultTaskIdx) {
-        mark = '=>';
-        print(chalk.green(mark), v);
+        choices.unshift(v);
       } else {
-        print(chalk.grey(mark), v);
+        choices.push(v);
       }
     });
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'task',
+          message: '切换任务',
+          choices,
+        },
+      ])
+      .then(({ task }) => {
+        config.defaultTaskIdx = tasks.findIndex((v) => v === task);
+        print('now use task:', chalk.yellowBright(tasks[config.defaultTaskIdx]));
+        updateConfig(config);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     return;
   }
   if (idx === -1) {
