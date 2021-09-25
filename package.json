@@ -1,6 +1,6 @@
 {
   "name": "time-control",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "生成自己的时间管理报告",
   "main": "index.js",
   "directories": {
