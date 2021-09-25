@@ -36,11 +36,6 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@element-plus/icons@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.nlark.com/@element-plus/icons/download/@element-plus/icons-0.0.11.tgz#9b187c002774548b911850d17fa5fc2f9a515f57"
-  integrity sha1-mxh8ACd0VIuRGFDRf6X8L5pRX1c=
-
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.nlark.com/@eslint/eslintrc/download/@eslint/eslintrc-0.4.3.tgz?cache=0&sync_timestamp=1628296418628&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40eslint%2Feslintrc%2Fdownload%2F%40eslint%2Feslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
@@ -70,10 +65,10 @@
   resolved "https://registry.nlark.com/@humanwhocodes/object-schema/download/@humanwhocodes/object-schema-1.2.0.tgz?cache=0&sync_timestamp=1625263515433&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40humanwhocodes%2Fobject-schema%2Fdownload%2F%40humanwhocodes%2Fobject-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha1-h956+cIxgm/daKxyWPd8Qp4OX88=
 
-"@popperjs/core@^2.4.4":
-  version "2.9.3"
-  resolved "https://registry.nlark.com/@popperjs/core/download/@popperjs/core-2.9.3.tgz?cache=0&sync_timestamp=1628004450969&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40popperjs%2Fcore%2Fdownload%2F%40popperjs%2Fcore-2.9.3.tgz#8b68da1ebd7fc603999cf6ebee34a4899a14b88e"
-  integrity sha1-i2jaHr1/xgOZnPbr7jSkiZoUuI4=
+"@popperjs/core@^2.10.1":
+  version "2.10.1"
+  resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.10.1.tgz#728ecd95ab207aab8a9a4e421f0422db329232be"
+  integrity sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw==
 
 "@types/estree@^0.0.48":
   version "0.0.48"
@@ -168,6 +163,21 @@
   version "3.2.2"
   resolved "https://registry.nlark.com/@vue/shared/download/@vue/shared-3.2.2.tgz?cache=0&sync_timestamp=1628696558021&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40vue%2Fshared%2Fdownload%2F%40vue%2Fshared-3.2.2.tgz#6104185ebd57af5a14ac51c1f491b2205fc24054"
   integrity sha1-YQQYXr1Xr1oUrFHB9JGyIF/CQFQ=
+
+"@vueuse/core@~6.1.0":
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/@vueuse/core/-/core-6.1.0.tgz#8137c291cf49b11c2deda4d5079096e55b36fc28"
+  integrity sha512-6KienU5QOWKuDqvHytep14274IGKyLlACzXjifOrgDQMkqvWZIUnDhpckT/1+O8n8DN59d5wzzICZI/2sfGCyg==
+  dependencies:
+    "@vueuse/shared" "6.1.0"
+    vue-demi "*"
+
+"@vueuse/shared@6.1.0":
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/@vueuse/shared/-/shared-6.1.0.tgz#1375fd41acefe52f9a1842f3c6a8a348786535ba"
+  integrity sha512-teW0TUQryGnEprHeOI6oH8NPVJBirknxksEiNCtdEjIi8W7JSTg8JPO+e1XlGI6ly24NDlDXUDYaHJayiaXjuw==
+  dependencies:
+    vue-demi "*"
 
 accepts@~1.3.7:
   version "1.3.7"
@@ -439,10 +449,10 @@ csstype@^2.6.8:
   resolved "https://registry.nlark.com/csstype/download/csstype-2.6.17.tgz?cache=0&sync_timestamp=1618818393132&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcsstype%2Fdownload%2Fcsstype-2.6.17.tgz#4cf30eb87e1d1a005d8b6510f95292413f6a1c0e"
   integrity sha1-TPMOuH4dGgBdi2UQ+VKSQT9qHA4=
 
-dayjs@1.x:
-  version "1.10.6"
-  resolved "https://registry.nlark.com/dayjs/download/dayjs-1.10.6.tgz#288b2aa82f2d8418a6c9d4df5898c0737ad02a63"
-  integrity sha1-KIsqqC8thBimydTfWJjAc3rQKmM=
+dayjs@^1.10.7:
+  version "1.10.7"
+  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.10.7.tgz#2cf5f91add28116748440866a0a1d26f3a6ce468"
+  integrity sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==
 
 debug@2.6.9, debug@^2.6.9:
   version "2.6.9"
@@ -506,17 +516,17 @@ ee-first@1.1.1:
   resolved "https://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-element-plus@^1.0.2-beta.71:
-  version "1.0.2-beta.71"
-  resolved "https://registry.nlark.com/element-plus/download/element-plus-1.0.2-beta.71.tgz?cache=0&sync_timestamp=1629258472244&other_urls=https%3A%2F%2Fregistry.nlark.com%2Felement-plus%2Fdownload%2Felement-plus-1.0.2-beta.71.tgz#148f16d5a0a800549989f7869bbf4d656c652d36"
-  integrity sha1-FI8W1aCoAFSZifeGm79NZWxlLTY=
+element-plus@^1.1.0-beta.16:
+  version "1.1.0-beta.16"
+  resolved "https://registry.npmjs.org/element-plus/-/element-plus-1.1.0-beta.16.tgz#4409d9e33d005693f6039f5ed1fe05e301b3170d"
+  integrity sha512-4BZEldnIfFZs5A/saRqaWE4PwTot4p3YZU7qsDr3ev2zp35pcCL9TtpWMLIvNTMxvxKew0HTDPTk9fAWIZFQrQ==
   dependencies:
-    "@element-plus/icons" "^0.0.11"
-    "@popperjs/core" "^2.4.4"
+    "@popperjs/core" "^2.10.1"
+    "@vueuse/core" "~6.1.0"
     async-validator "^3.4.0"
-    dayjs "1.x"
-    lodash "^4.17.20"
-    mitt "^2.1.0"
+    dayjs "^1.10.7"
+    lodash "^4.17.21"
+    memoize-one "^5.2.1"
     normalize-wheel "^1.0.1"
     resize-observer-polyfill "^1.5.1"
 
@@ -1298,7 +1308,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.npm.taobao.org/lodash.truncate/download/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@^4.17.20, lodash@^4.17.21:
+lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=
@@ -1328,6 +1338,11 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.npm.taobao.org/media-typer/download/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
+
+memoize-one@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.npmjs.org/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+  integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
 
 merge-descriptors@1.0.1:
   version "1.0.1"
@@ -1374,11 +1389,6 @@ minimist@^1.2.0:
   version "1.2.5"
   resolved "https://registry.nlark.com/minimist/download/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha1-Z9ZgFLZqaoqqDAg8X9WN9OTpdgI=
-
-mitt@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.nlark.com/mitt/download/mitt-2.1.0.tgz#f740577c23176c6205b121b2973514eade1b2230"
-  integrity sha1-90BXfCMXbGIFsSGylzUU6t4bIjA=
 
 ms@2.0.0:
   version "2.0.0"
@@ -2078,6 +2088,11 @@ vite@^2.4.4:
     rollup "^2.38.5"
   optionalDependencies:
     fsevents "~2.3.2"
+
+vue-demi@*:
+  version "0.11.4"
+  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.11.4.tgz#6101992fe4724cf5634018a16e953f3052e94e2a"
+  integrity sha512-/3xFwzSykLW2HiiLie43a+FFgNOcokbBJ+fzvFXd0r2T8MYohqvphUyDQ8lbAwzQ3Dlcrb1c9ykifGkhSIAk6A==
 
 vue-eslint-parser@^7.10.0:
   version "7.10.0"

@@ -30,7 +30,7 @@
     "chalk": "^4.1.2",
     "commander": "^6.2.1",
     "cross-spawn": "^7.0.3",
-    "element-plus": "^1.0.2-beta.71",
+    "element-plus": "^1.1.0-beta.16",
     "express": "^4.17.1",
     "flash-wolves": "^0.0.4",
     "play-sound": "^1.1.3",

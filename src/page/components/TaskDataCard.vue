@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="calendar-wrap">
     <el-calendar v-model="value">
       <template #dateCell="{ data }">
         <div class="day">
@@ -127,6 +127,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.calendar-wrap{
+  max-width: 1600px;
+  margin: 0  auto;
+}
 .day {
   display: flex;
   flex-direction: column;
