@@ -73,6 +73,7 @@ module.exports = function (type, filepath) {
       if (!filepath) {
         const { configPath } = config;
         print(chalk.yellow('configFile'), chalk.blueBright(configPath || originConfigPath));
+        return;
       }
       const configPath = getFilePath(cwd, filepath);
       if (!existsSync(configPath)) {

@@ -27,7 +27,7 @@
                 <ol class="things">
                   <li v-for="(t,idx) in v.things" :key="idx">
                     <span>{{ t.title }}</span>
-                    <span>{{ t.time }}</span>
+                    <span>{{ t.time }}h</span>
                   </li>
                 </ol>
               </el-popover>
@@ -42,6 +42,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { getEveryDayData } from '../api';
+import { fixedNum } from '../utils';
 
 const value = ref(new Date());
 const parseDay = (date) => {
@@ -87,17 +88,23 @@ const parseOneDay = (data) => {
     t.things.forEach((thing) => {
       const { time, content } = thing;
       taskTime += (+time);
-      task.things.push({
-        title: content,
-        time: `${(+time).toFixed(4)}h`,
-      });
+      const tempThing = task.things.find(v => v.title === content)
+      if (tempThing) {
+        tempThing.time = fixedNum(+tempThing.time + +time)
+      } else {
+        // 不存在直接加入
+        task.things.push({
+          title: content,
+          time: fixedNum(time),
+        });
+      }
     });
-    task.time = `${taskTime.toFixed(4)}h`;
+    task.time = `${fixedNum(taskTime)}h`;
     sumTime += taskTime;
 
     o.tasks.push(task);
   });
-  o.time = `${sumTime.toFixed(4)}h`;
+  o.time = `${fixedNum(sumTime)}h`;
   return {
     [data.title]: o,
   };

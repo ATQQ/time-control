@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = function () {
   const cwd = path.resolve(__dirname, '../../');
   const viteConfigPath = path.join(cwd, 'src/page/vite.config.js');
-  const serveService = spawn('node_modules/.bin/vite', ['src/page', '--host', '--config', viteConfigPath], {
+  const serveService = spawn('node_modules/.bin/vite', ['src/page', '--config', viteConfigPath], {
     cwd,
     stdio: 'inherit',
   });
